@@ -1,0 +1,43 @@
+{
+  "_comment": "This file was generated automatically by Supernova.io and should not be changed manually. To modify the format or content of this file, please contact your design system team.",
+  "space": {
+    "spacing": {
+      "0": {
+        "value": "0px"
+      },
+      "2": {
+        "value": "2px"
+      },
+      "4": {
+        "value": "4px"
+      },
+      "8": {
+        "value": "8px"
+      },
+      "12": {
+        "value": "12px"
+      },
+      "16": {
+        "value": "16px"
+      },
+      "20": {
+        "value": "20px"
+      },
+      "24": {
+        "value": "24px"
+      },
+      "28": {
+        "value": "28px"
+      },
+      "32": {
+        "value": "32px"
+      },
+      "36": {
+        "value": "36px"
+      },
+      "40": {
+        "value": "40px"
+      }
+    }
+  }
+}
