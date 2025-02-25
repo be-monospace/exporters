@@ -3,7 +3,7 @@
  * To modify the format or content of this file, please contact your design system team. 
  */
 
-:root {
+.theme-saturn-887a {
   --brandAColorForegroundNeutralFaded: hsl(223%, 15%, 44%);
   --brandAColorForegroundPlaceholder: hsl(220%, 9%, 54%);
   --brandAColorBackgroundNeutralHighlighted: hsla(224%, 62%, 25%, 0.08);
@@ -211,7 +211,7 @@
   --brandAColorPaletteMagentaMagenta200: hsl(289%, 67%, 87%);
   --brandAColorPaletteMagentaMagenta100: hsl(287%, 68%, 94%);
   --brandAColorPaletteMagentaMagenta0: hsl(291%, 87%, 97%);
-  --brandAColorSemanticWarningWarningBackground: hsl(0%, 0%, 100%);
+  --brandAColorSemanticWarningWarningBackground: var(--brandAColorPaletteOrangeOrange700);
   --brandAColorForegroundNeutral: var(--brandAColorNeutralNeutral900);
   --brandAColorForegroundPrimary: var(--brandAColorPrimaryPrimary800);
   --brandAColorForegroundCritical: var(--brandAColorRedRed600);
@@ -280,28 +280,28 @@
   --brandAColorSemanticOpportunityOpportunityBorder: var(--brandAColorPaletteAquaAqua300);
   --brandAColorSemanticOpportunityOpportunityColor: var(--brandAColorPaletteAquaAqua800);
   --brandAColorSemanticOpportunityOpportunityIcon: var(--brandAColorPaletteAquaAqua700);
-  --brandAColorSemanticPrimaryHoverInnactiveBackground: var(--brandAColorPaletteYellowYellow400);
-  --brandAColorSemanticPrimaryPrimaryActiveBackground: var(--brandAColorPaletteYellowYellow600);
-  --brandAColorSemanticPrimaryPrimaryBackground: var(--brandAColorPaletteYellowYellow500);
-  --brandAColorSemanticPrimaryPrimaryBorder: var(--brandAColorPaletteYellowYellow600);
-  --brandAColorSemanticPrimaryPrimaryColor: var(--brandAColorPaletteYellowYellow1100);
-  --brandAColorSemanticPrimaryPrimaryHoverBackground: var(--brandAColorPaletteYellowYellow600);
-  --brandAColorSemanticPrimaryPrimaryHoverColor: var(--brandAColorPaletteYellowYellow1000);
-  --brandAColorSemanticPrimaryPrimaryInnactiveBackground: var(--brandAColorPaletteYellowYellow200);
+  --brandAColorSemanticPrimaryHoverInnactiveBackground: var(--brandAColorPaletteMagentaMagenta400);
+  --brandAColorSemanticPrimaryPrimaryActiveBackground: var(--brandAColorPaletteMagentaMagenta600);
+  --brandAColorSemanticPrimaryPrimaryBackground: var(--brandAColorPaletteMagentaMagenta500);
+  --brandAColorSemanticPrimaryPrimaryBorder: var(--brandAColorPaletteMagentaMagenta600);
+  --brandAColorSemanticPrimaryPrimaryColor: var(--brandAColorPaletteMagentaMagenta1100);
+  --brandAColorSemanticPrimaryPrimaryHoverBackground: var(--brandAColorPaletteMagentaMagenta600);
+  --brandAColorSemanticPrimaryPrimaryHoverColor: var(--brandAColorPaletteMagentaMagenta1000);
+  --brandAColorSemanticPrimaryPrimaryInnactiveBackground: var(--brandAColorPaletteMagentaMagenta200);
   /* Some test description */
   --brandAColorSemanticSaleSale30Background: var(--brandAColorPaletteTealTeal500);
   --brandAColorSemanticSaleSale50Background: var(--brandAColorPalettePinkPink600);
   --brandAColorSemanticSaleSale70Background: var(--brandAColorPaletteYellowYellow600);
   --brandAColorSemanticSaleSaleColor: var(--brandAColorPaletteNeutralNeutral0);
-  --brandAColorSemanticSuccessSuccessBackground: var(--brandAColorPaletteGreenGreen100);
-  --brandAColorSemanticSuccessSuccessBorder: var(--brandAColorPaletteGreenGreen400);
-  --brandAColorSemanticSuccessSuccessColor: var(--brandAColorPaletteGreenGreen900);
-  --brandAColorSemanticSuccessSuccessIcon: var(--brandAColorPaletteGreenGreen800);
-  --brandAColorSemanticTextTextBody: var(--brandAColorPaletteOrangeOrange1000);
+  --brandAColorSemanticSuccessSuccessBackground: var(--brandAColorPaletteAquaAqua100);
+  --brandAColorSemanticSuccessSuccessBorder: var(--brandAColorPaletteBlueBlue1000);
+  --brandAColorSemanticSuccessSuccessColor: var(--brandAColorPaletteBlueBlue900);
+  --brandAColorSemanticSuccessSuccessIcon: var(--brandAColorPaletteBlueBlue800);
+  --brandAColorSemanticTextTextBody: var(--brandAColorPaletteMagentaMagenta1000);
   --brandAColorSemanticTextTextHeadline: var(--brandAColorPaletteOrangeOrange1100);
   --brandAColorSemanticTextTextInverse: var(--brandAColorPaletteNeutralNeutral0);
   --brandAColorSemanticTextTextSubtext: var(--brandAColorPaletteNeutralNeutral700);
-  --brandAColorSemanticWarningWarningBorder: var(--brandAColorPaletteYellowYellow600);
-  --brandAColorSemanticWarningWarningColor: var(--brandAColorPaletteYellowYellow900);
-  --brandAColorSemanticWarningWarningIcon: var(--brandAColorPaletteYellowYellow800);
+  --brandAColorSemanticWarningWarningBorder: var(--brandAColorPaletteOrangeOrange600);
+  --brandAColorSemanticWarningWarningColor: var(--brandAColorPaletteOrangeOrange900);
+  --brandAColorSemanticWarningWarningIcon: var(--brandAColorPaletteOrangeOrange800);
 }

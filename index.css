@@ -1,8 +1,35 @@
 /* Base tokens */
-@import "./base/border-radius.css";
-@import "./base/space.css";
 @import "./base/dimension.css";
-@import "./base/opacity.css";
+@import "./base/z-index.css";
 @import "./base/string.css";
 @import "./base/color.css";
 @import "./base/typography.css";
+@import "./base/gradient.css";
+@import "./base/shadow.css";
+
+/* Theme: Dark */
+@import "./dark/dimension.css";
+@import "./dark/z-index.css";
+@import "./dark/string.css";
+@import "./dark/color.css";
+@import "./dark/typography.css";
+@import "./dark/gradient.css";
+@import "./dark/shadow.css";
+
+/* Theme: Jupiter 7d41 */
+@import "./jupiter-7d41/dimension.css";
+@import "./jupiter-7d41/z-index.css";
+@import "./jupiter-7d41/string.css";
+@import "./jupiter-7d41/color.css";
+@import "./jupiter-7d41/typography.css";
+@import "./jupiter-7d41/gradient.css";
+@import "./jupiter-7d41/shadow.css";
+
+/* Theme: Saturn 887a */
+@import "./saturn-887a/dimension.css";
+@import "./saturn-887a/z-index.css";
+@import "./saturn-887a/string.css";
+@import "./saturn-887a/color.css";
+@import "./saturn-887a/typography.css";
+@import "./saturn-887a/gradient.css";
+@import "./saturn-887a/shadow.css";

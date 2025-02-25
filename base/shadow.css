@@ -4,7 +4,5 @@
  */
 
 :root {
-  --brandAStringPaletteMagentaString: "String value";
-  --brandAStringNamingIsHard: "400 italic";
-  --brandAStringPaletteGreenString: "String value";
+  --brandAShadowShadowBlue: 0px 4px 4px 0px var(--brandAColorForegroundPrimary);
 }

@@ -3,17 +3,17 @@
  * To modify the format or content of this file, please contact your design system team. 
  */
 
-:root {
-  --brandAColorForegroundNeutralFaded: hsl(223%, 15%, 44%);
+.theme-dark {
+  --brandAColorForegroundNeutralFaded: hsl(218%, 18%, 67%);
   --brandAColorForegroundPlaceholder: hsl(220%, 9%, 54%);
-  --brandAColorBackgroundNeutralHighlighted: hsla(224%, 62%, 25%, 0.08);
-  --brandAColorBackgroundPageFaded: hsl(0%, 0%, 98%);
+  --brandAColorBackgroundNeutralHighlighted: hsla(217%, 100%, 91%, 0.08);
+  --brandAColorBackgroundPageFaded: hsl(223%, 65%, 10%);
   --brandAColorBackgroundCritical: hsl(0%, 76%, 53%);
   --brandAColorBackgroundPositive: hsl(152%, 78%, 30%);
   --brandAColorBackgroundBlur: hsla(0%, 0%, 100%, 0.95);
   --brandAColorBackgroundBlurNeutral: hsla(220%, 16%, 96%, 0.95);
   --brandAColorBackgroundBlurNeutralHighlighted: hsla(225%, 12%, 93%, 0.95);
-  --brandAColorBorderNeutralFaded: hsl(223%, 23%, 94%);
+  --brandAColorBorderNeutralFaded: hsl(227%, 26%, 18%);
   --brandAColorBorderCriticalFaded: hsl(355%, 82%, 91%);
   --brandAColorBorderPositiveFaded: hsl(135%, 47%, 87%);
   --brandAColorBorderUpgradeFaded: hsl(255%, 75%, 92%);
@@ -42,7 +42,7 @@
   --brandAColorDecorativeRedBorder: hsl(357%, 100%, 96%);
   --brandAColorDecorativeTealForeground: hsl(175%, 77%, 27%);
   --brandAColorDecorativeTealBackground: hsl(166%, 100%, 94%);
-  --brandAColorDecorativeTealBorder: hsl(166%, 76%, 89%);
+  --brandAColorDecorativeTealBorder: hsl(167%, 65%, 86%);
   --brandAColorDecorativeYellowForeground: hsl(35%, 92%, 33%);
   --brandAColorDecorativeYellowBackground: hsl(55%, 100%, 95%);
   --brandAColorDecorativeYellowBorder: hsl(55%, 97%, 88%);
@@ -212,22 +212,22 @@
   --brandAColorPaletteMagentaMagenta100: hsl(287%, 68%, 94%);
   --brandAColorPaletteMagentaMagenta0: hsl(291%, 87%, 97%);
   --brandAColorSemanticWarningWarningBackground: hsl(0%, 0%, 100%);
-  --brandAColorForegroundNeutral: var(--brandAColorNeutralNeutral900);
-  --brandAColorForegroundPrimary: var(--brandAColorPrimaryPrimary800);
+  --brandAColorForegroundNeutral: var(--brandAColorWhite);
+  --brandAColorForegroundPrimary: var(--brandAColorPrimaryPrimary500);
   --brandAColorForegroundCritical: var(--brandAColorRedRed600);
   --brandAColorForegroundWarning: var(--brandAColorOrangeOrange600);
   --brandAColorForegroundPositive: var(--brandAColorGreenGreen600);
   --brandAColorForegroundUpgrade: var(--brandAColorPurplePurple600);
-  --brandAColorForegroundDisabled: var(--brandAColorNeutralNeutral500);
-  --brandAColorBackgroundElevationBase: var(--brandAColorWhite);
-  --brandAColorBackgroundElevationRaised: var(--brandAColorWhite);
-  --brandAColorBackgroundElevationOverlay: var(--brandAColorWhite);
-  --brandAColorBackgroundNeutral: var(--brandAColorNeutralNeutral200Opaque);
-  --brandAColorBackgroundNeutralFaded: var(--brandAColorNeutralNeutral100Opaque);
-  --brandAColorBackgroundPage: var(--brandAColorWhite);
+  --brandAColorForegroundDisabled: hsl(222%, 22%, 82%);
+  --brandAColorBackgroundElevationBase: var(--brandAColorNeutralNeutral900);
+  --brandAColorBackgroundElevationRaised: var(--brandAColorNeutralNeutral900);
+  --brandAColorBackgroundElevationOverlay: var(--brandAColorNeutralNeutral900);
+  --brandAColorBackgroundNeutral: hsla(217%, 100%, 91%, 0.06);
+  --brandAColorBackgroundNeutralFaded: hsla(217%, 100%, 91%, 0.04);
+  --brandAColorBackgroundPage: hsl(226%, 76%, 7%);
   --brandAColorBackgroundPrimary: var(--brandAColorPrimaryPrimary800);
   --brandAColorBackgroundPrimaryHighlighted: var(--brandAColorPrimaryPrimary700);
-  --brandAColorBackgroundPrimaryFaded: var(--brandAColorPrimaryPrimary200);
+  --brandAColorBackgroundPrimaryFaded: hsl(219%, 100%, 44%);
   --brandAColorBackgroundCriticalHighlighted: var(--brandAColorRedRed600);
   --brandAColorBackgroundCriticalFaded: var(--brandAColorRedRed100);
   --brandAColorBackgroundWarning: var(--brandAColorOrangeOrange500);
@@ -237,8 +237,8 @@
   --brandAColorBackgroundPositiveFaded: var(--brandAColorGreenGreen100);
   --brandAColorBackgroundUpgrade: var(--brandAColorPurplePurple600);
   --brandAColorBackgroundUpgradeHighlighted: var(--brandAColorPurplePurple700);
-  --brandAColorBackgroundUpgradeFaded: var(--brandAColorPurplePurple100);
-  --brandAColorBackgroundDisabled: var(--brandAColorNeutralNeutral200Opaque);
+  --brandAColorBackgroundUpgradeFaded: hsl(257%, 73%, 97%);
+  --brandAColorBackgroundDisabled: hsla(217%, 100%, 91%, 0.07);
   --brandAColorBackgroundDisabledFaded: var(--brandAColorNeutralNeutral100Opaque);
   --brandAColorBackgroundFocusHighlight: var(--brandAColorPrimaryPrimary400);
   --brandAColorBorderNeutral: var(--brandAColorNeutralNeutral500);
@@ -250,7 +250,7 @@
   --brandAColorBorderPositive: var(--brandAColorGreenGreen600);
   --brandAColorBorderUpgrade: var(--brandAColorPurplePurple700);
   --brandAColorBorderFocusFaded: var(--brandAColorPrimaryPrimary400);
-  --brandAColorOnBackgroundNeutral: var(--brandAColorNeutralNeutral900);
+  --brandAColorOnBackgroundNeutral: var(--brandAColorWhite);
   --brandAColorPersistentBlack: var(--brandAColorNeutralNeutral900);
   --brandAColorDecorativeBlueForeground: var(--brandAColorPrimaryPrimary600);
   --brandAColorDecorativeBlueBackground: var(--brandAColorPrimaryPrimary200);

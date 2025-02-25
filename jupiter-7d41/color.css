@@ -3,7 +3,7 @@
  * To modify the format or content of this file, please contact your design system team. 
  */
 
-:root {
+.theme-jupiter-7d41 {
   --brandAColorForegroundNeutralFaded: hsl(223%, 15%, 44%);
   --brandAColorForegroundPlaceholder: hsl(220%, 9%, 54%);
   --brandAColorBackgroundNeutralHighlighted: hsla(224%, 62%, 25%, 0.08);

@@ -3,8 +3,6 @@
  * To modify the format or content of this file, please contact your design system team. 
  */
 
-:root {
-  --brandAStringPaletteMagentaString: "String value";
-  --brandAStringNamingIsHard: "400 italic";
-  --brandAStringPaletteGreenString: "String value";
+.theme-saturn-887a {
+  --brandAShadowShadowBlue: 0px 4px 4px 0px var(--brandAColorForegroundPrimary);
 }

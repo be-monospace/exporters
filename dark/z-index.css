@@ -3,8 +3,6 @@
  * To modify the format or content of this file, please contact your design system team. 
  */
 
-:root {
-  --brandAStringPaletteMagentaString: "String value";
-  --brandAStringNamingIsHard: "400 italic";
-  --brandAStringPaletteGreenString: "String value";
+.theme-dark {
+  --brandAZIndexZIndexBase: 100;
 }
