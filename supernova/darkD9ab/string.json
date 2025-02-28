@@ -3,13 +3,15 @@
   "string": {
     "string": {
       "fontFamily": {
-        "value": "Inter"
+        "value": "Inter",
+        "type": "string"
       }
     },
     "palette": {
       "magenta": {
         "string": {
-          "value": "String value"
+          "value": "String value",
+          "type": "string"
         }
       }
     }

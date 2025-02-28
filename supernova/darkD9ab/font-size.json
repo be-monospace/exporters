@@ -3,7 +3,8 @@
   "fontSize": {
     "title1": {
       "fontSize": {
-        "value": "32px"
+        "value": "32px",
+        "type": "fontSize"
       }
     }
   }

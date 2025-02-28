@@ -3,10 +3,12 @@
   "typography": {
     "typography": {
       "lgTest": {
-        "value": "400 {dimension.dimension.example} Inter"
+        "value": "400 {dimension.dimension.example} Inter",
+        "type": "typography"
       },
       "lgSolutionTest": {
-        "value": "400 {dimension.dimension.example} Instrument Sans"
+        "value": "400 {dimension.dimension.example} Instrument Sans",
+        "type": "typography"
       }
     }
   }

@@ -3,7 +3,8 @@
   "lineHeight": {
     "title1": {
       "lineHeight": {
-        "value": "40px"
+        "value": "40px",
+        "type": "lineHeight"
       }
     }
   }

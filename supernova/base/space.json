@@ -3,40 +3,52 @@
   "space": {
     "spacing": {
       "0": {
-        "value": "0px"
+        "value": "0px",
+        "type": "space"
       },
       "2": {
-        "value": "2px"
+        "value": "2px",
+        "type": "space"
       },
       "4": {
-        "value": "4px"
+        "value": "4px",
+        "type": "space"
       },
       "8": {
-        "value": "8px"
+        "value": "8px",
+        "type": "space"
       },
       "12": {
-        "value": "12px"
+        "value": "12px",
+        "type": "space"
       },
       "16": {
-        "value": "16px"
+        "value": "16px",
+        "type": "space"
       },
       "20": {
-        "value": "20px"
+        "value": "20px",
+        "type": "space"
       },
       "24": {
-        "value": "24px"
+        "value": "24px",
+        "type": "space"
       },
       "28": {
-        "value": "28px"
+        "value": "28px",
+        "type": "space"
       },
       "32": {
-        "value": "32px"
+        "value": "32px",
+        "type": "space"
       },
       "36": {
-        "value": "36px"
+        "value": "36px",
+        "type": "space"
       },
       "40": {
-        "value": "40px"
+        "value": "40px",
+        "type": "space"
       }
     }
   }

@@ -3,7 +3,8 @@
   "fontFamily": {
     "fontFamily": {
       "default": {
-        "value": "Inter"
+        "value": "Inter",
+        "type": "fontFamily"
       }
     }
   }

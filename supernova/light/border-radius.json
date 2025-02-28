@@ -3,22 +3,28 @@
   "borderRadius": {
     "borderRadius": {
       "none": {
-        "value": "0px"
+        "value": "0px",
+        "type": "borderRadius"
       },
       "small": {
-        "value": "3px"
+        "value": "3px",
+        "type": "borderRadius"
       },
       "default": {
-        "value": "5px"
+        "value": "5px",
+        "type": "borderRadius"
       },
       "medium": {
-        "value": "7px"
+        "value": "7px",
+        "type": "borderRadius"
       },
       "large": {
-        "value": "12px"
+        "value": "12px",
+        "type": "borderRadius"
       },
       "full": {
-        "value": "999px"
+        "value": "999px",
+        "type": "borderRadius"
       }
     }
   }
