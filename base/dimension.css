@@ -4,29 +4,6 @@
  */
 
 :root {
-  /* No radius */
-  --brandADimensionBorderRadiusNone: 0px;
-  --brandADimensionBorderRadiusSmall: 3px;
-  --brandADimensionBorderRadiusDefault: 5px;
-  --brandADimensionBorderRadiusMedium: 8px;
-  --brandADimensionBorderRadiusLarge: 12px;
-  /* Essentially a circle */
-  --brandADimensionBorderRadiusFull: 999px;
-  --brandADimensionSpacing0: 0px;
-  --brandADimensionSpacing2: 2px;
-  --brandADimensionSpacing4: 4px;
-  --brandADimensionSpacing8: 8px;
-  --brandADimensionSpacing12: 12px;
-  --brandADimensionSpacing16: 16px;
-  --brandADimensionSpacing20: 20px;
-  --brandADimensionSpacing24: 24px;
-  --brandADimensionSpacing28: 28px;
-  --brandADimensionSpacing32: 32px;
-  --brandADimensionSpacing36: 36px;
-  --brandADimensionSpacing40: 40px;
-  --brandADimensionSpacingSemanticStackGap: 1px;
-  --brandADimensionOpacityDisabled: 50px;
-  --brandADimensionShadowFocusRingWidth: 3px;
-  --brandADimensionPaletteMagentaNumber: 0px;
-  --brandADimensionExample: 64px;
+  --dimensionSpacingSemanticStackGap: 1px;
+  --dimensionShadowFocusRingWidth: 3px;
 }
