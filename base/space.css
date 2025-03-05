@@ -4,16 +4,16 @@
  */
 
 :root {
-  --spaceSpacing0: 0px;
-  --spaceSpacing2: 2px;
-  --spaceSpacing4: 4px;
-  --spaceSpacing8: 8px;
-  --spaceSpacing12: 12px;
-  --spaceSpacing16: 16px;
-  --spaceSpacing20: 20px;
-  --spaceSpacing24: 24px;
-  --spaceSpacing28: 28px;
-  --spaceSpacing32: 32px;
-  --spaceSpacing36: 36px;
-  --spaceSpacing40: 40px;
+  --space-spacing-0: 0px;
+  --space-spacing-2: 2px;
+  --space-spacing-4: 4px;
+  --space-spacing-8: 8px;
+  --space-spacing-12: 12px;
+  --space-spacing-16: 16px;
+  --space-spacing-20: 20px;
+  --space-spacing-24: 24px;
+  --space-spacing-28: 28px;
+  --space-spacing-32: 32px;
+  --space-spacing-36: 36px;
+  --space-spacing-40: 40px;
 }
