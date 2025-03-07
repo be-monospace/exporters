@@ -4,16 +4,20 @@
  */
 
 .theme-dark {
-  --brandATypographyH1: 700 57px/64px "Roboto";
-  --brandATypographyH2: 700 43px/50px "Roboto";
-  --brandATypographyH3: 700 32px/40px "Roboto";
-  --brandATypographyH4: 700 24px/32px "Roboto";
-  --brandATypographyH5: 700 21px/29px "Roboto";
-  --brandATypographyLargeLead: 400 24px/32px "Roboto";
-  --brandATypographyMediumLead: 400 21px/29px "Roboto";
-  --brandATypographyButtonLabel: 400 21px/29px "Roboto";
-  --brandATypographyParagraph: 400 18px/26px "Roboto";
-  --brandATypographySmallParagraph: 400 16px/24px "Roboto";
-  --brandATypographyTinyParagraph: 400 12px/24px "Roboto";
-  --brandATypographySale: 700 24px/34px "Roboto";
+  --typographyH1: 700 57px/64px "Roboto";
+  --typographyH2: 700 43px/50px "Roboto";
+  --typographyH3: 700 32px/40px "Roboto";
+  --typographyH4: 700 24px/32px "Roboto";
+  --typographyH5: 700 21px/29px "Roboto";
+  --typographyLargeLead: 400 24px/32px "Roboto";
+  --typographyMediumLead: 400 21px/29px "Roboto";
+  --typographyButtonLabel: 400 21px/29px "Roboto";
+  --typographyParagraph: 400 18px/26px "Roboto";
+  --typographySmallParagraph: 400 16px/24px "Roboto";
+  --typographyTinyParagraph: 400 12px/24px "Roboto";
+  --typographySale: 700 24px/34px "Roboto";
+  /* typewriter font test */
+  --typographyImpactLabel: 400 13px "Impact Label";
+  /* importing test */
+  --typographyPoppins: 400 13px "Poppins";
 }
