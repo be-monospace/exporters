@@ -5,11 +5,11 @@
 
 :root {
   /* No radius */
-  --borderRadiusBorderRadiusNone: 0px;
-  --borderRadiusBorderRadiusSmall: 3px;
-  --borderRadiusBorderRadiusDefault: 5px;
-  --borderRadiusBorderRadiusMedium: 7px;
-  --borderRadiusBorderRadiusLarge: 12px;
+  --borderradiusborderradiusnone: 0px;
+  --borderradiusborderradiussmall: 3px;
+  --borderradiusborderradiusdefault: 5px;
+  --borderradiusborderradiusmedium: 7px;
+  --borderradiusborderradiuslarge: 12px;
   /* Essentially a circle */
-  --borderRadiusBorderRadiusFull: 999px;
+  --borderradiusborderradiusfull: 999px;
 }

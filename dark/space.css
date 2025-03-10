@@ -4,16 +4,16 @@
  */
 
 .theme-dark {
-  --spaceSpacing0: 0px;
-  --spaceSpacing2: 2px;
-  --spaceSpacing4: 4px;
-  --spaceSpacing8: 8px;
-  --spaceSpacing12: 12px;
-  --spaceSpacing16: 16px;
-  --spaceSpacing20: 20px;
-  --spaceSpacing24: 24px;
-  --spaceSpacing28: 28px;
-  --spaceSpacing32: 32px;
-  --spaceSpacing36: 36px;
-  --spaceSpacing40: 40px;
+  --spacespacing0: 0px;
+  --spacespacing2: 2px;
+  --spacespacing4: 4px;
+  --spacespacing8: 8px;
+  --spacespacing12: 12px;
+  --spacespacing16: 16px;
+  --spacespacing20: 20px;
+  --spacespacing24: 24px;
+  --spacespacing28: 28px;
+  --spacespacing32: 32px;
+  --spacespacing36: 36px;
+  --spacespacing40: 40px;
 }
