@@ -6,12 +6,3 @@
 @import "./base/string.css";
 @import "./base/color.css";
 @import "./base/typography.css";
-
-/* Theme: Dark */
-@import "./dark/border-radius.css";
-@import "./dark/space.css";
-@import "./dark/dimension.css";
-@import "./dark/opacity.css";
-@import "./dark/string.css";
-@import "./dark/color.css";
-@import "./dark/typography.css";
