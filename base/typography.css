@@ -4,20 +4,20 @@
  */
 
 :root {
-  --Typography-H1: 700 57px/64px "Roboto";
-  --Typography-H2: 700 43px/50px "Roboto";
-  --Typography-H3: 700 32px/40px "Roboto";
-  --Typography-H4: 700 24px/32px "Roboto";
-  --Typography-H5: 700 21px/29px "Roboto";
-  --Typography-Large-Lead: 400 24px/32px "Roboto";
-  --Typography-Medium-Lead: 400 21px/29px "Roboto";
-  --Typography-Button-Label: 400 21px/29px "Roboto";
-  --Typography-Paragraph: 400 18px/26px "Roboto";
-  --Typography-Small-Paragraph: 400 16px/24px "Roboto";
-  --Typography-Tiny-Paragraph: 400 12px/24px "Roboto";
-  --Typography-Sale: 700 24px/34px "Roboto";
+  --typography_h1: 700 57px/64px "Roboto";
+  --typography_h2: 700 43px/50px "Roboto";
+  --typography_h3: 700 32px/40px "Roboto";
+  --typography_h4: 700 24px/32px "Roboto";
+  --typography_h5: 700 21px/29px "Roboto";
+  --typography_large_lead: 400 24px/32px "Roboto";
+  --typography_medium_lead: 400 21px/29px "Roboto";
+  --typography_button_label: 400 21px/29px "Roboto";
+  --typography_paragraph: 400 18px/26px "Roboto";
+  --typography_small_paragraph: 400 16px/24px "Roboto";
+  --typography_tiny_paragraph: 400 12px/24px "Roboto";
+  --typography_sale: 700 24px/34px "Roboto";
   /* typewriter font test */
-  --Typography-Impact-Label: 400 13px "Impact Label";
+  --typography_impact_label: 400 13px "Impact Label";
   /* importing test */
-  --Typography-Poppins: 400 13px "Poppins";
+  --typography_poppins: 400 13px "Poppins";
 }
