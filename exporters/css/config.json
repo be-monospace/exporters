@@ -223,7 +223,7 @@
     {
         "key": "fileStructure",
         "type": "enum",
-        "default": "separateByType",
+        "default": "byCollection",
         "title": "File structure",
         "description": "Control how token styles are organized in files",
         "category": "Style files",
@@ -235,6 +235,10 @@
             "singleFile": {
                 "label": "Single combined file",
                 "description": "Generate one file containing all token types"
+            },
+            "byCollection": {
+                "label": "Separate files by collection",
+                "description": "Generate separate files for each token collection"
             }
         }
     },

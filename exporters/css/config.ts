@@ -13,6 +13,7 @@ export enum ThemeExportStyle {
 export enum FileStructure {
   SeparateByType = "separateByType",
   SingleFile = "singleFile",
+  ByCollection = "byCollection",
 }
 
 export enum TokenNameStructure {

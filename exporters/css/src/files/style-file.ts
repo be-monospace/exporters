@@ -26,13 +26,18 @@ export function generateStyleFiles(
     return []
   }
 
-  // For single file output
+  // Handle file structure by collection
+  if (exportConfiguration.fileStructure === FileStructure.ByCollection) {
+    return generateStyleFilesByCollection(tokens, tokenGroups, tokenCollections)
+  }
+
+  // Handle single file structure
   if (exportConfiguration.fileStructure === FileStructure.SingleFile) {
     const result = generateCombinedStyleFile(tokens, tokenGroups, themePath, theme, tokenCollections)
     return result ? [result] : []
   }
 
-  // For separate files by type (existing logic)
+  // Default: separate files by type
   const types = [...new Set(tokens.map(token => token.tokenType))]
   return types
     .map(type => styleOutputFile(type, tokens, tokenGroups, themePath, theme, tokenCollections))
@@ -184,5 +189,41 @@ function generateCombinedStyleFile(
     relativePath: relativePath,
     fileName: fileName,
     content: content,
+  })
+}
+
+/**
+ * Generates CSS token files grouped by tokenCollections
+ */
+export function generateStyleFilesByCollection(
+  tokens: Array<Token>,
+  tokenGroups: Array<TokenGroup>,
+  tokenCollections: Array<DesignSystemCollection>
+): Array<OutputTextFile> {
+  return tokenCollections.flatMap((collection) => {
+    // Filter tokens belonging to this collection
+    const tokensInCollection = tokens.filter(token => token.collectionId === collection.id)
+    if (tokensInCollection.length === 0) {
+      return []
+    }
+    // Generate a single style file for this collection
+    const file = generateCombinedStyleFile(
+      tokensInCollection,
+      tokenGroups,
+      '', // No themePath
+      undefined, // No theme
+      tokenCollections
+    )
+    // Customize the file name/path for the collection
+    if (file) {
+      const fileName = `tokens.${collection.name.replace(/\s+/g, '-').toLowerCase()}.css`
+      const relativePath = `./${collection.name.replace(/\s+/g, '-').toLowerCase()}`
+      return [{
+        ...file,
+        fileName,
+        relativePath
+      }]
+    }
+    return []
   })
 }
