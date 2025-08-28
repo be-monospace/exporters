@@ -1,0 +1,15 @@
+/**
+ * This file was generated automatically by Supernova.io and should not be changed manually.
+ * To modify the format or content of this file, please contact your design system team. 
+ */
+
+.theme-dark {
+  /* No radius */
+  --Border-Radius-Border-Radius-None: 0px;
+  --Border-Radius-Border-Radius-Small: 3px;
+  --Border-Radius-Border-Radius-Default: 5px;
+  --Border-Radius-Border-Radius-Medium: 7px;
+  --Border-Radius-Border-Radius-Large: 12px;
+  /* Essentially a circle */
+  --Border-Radius-Border-Radius-Full: 999px;
+}
