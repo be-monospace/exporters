@@ -193,7 +193,7 @@
     {
         "key": "fileStructure",
         "type": "enum",
-        "default": "separateByType",
+        "default": "separateByCollection",
         "title": "File structure",
         "description": "Control how token styles are organized in files",
         "category": "Style files",
@@ -205,6 +205,10 @@
             "singleFile": {
                 "label": "Single combined file",
                 "description": "Generate one file containing all token types"
+            },
+            "separateByCollection": {
+                "label": "Separate files by collection",
+                "description": "Generate separate files for each collection"
             }
         }
     },
@@ -331,7 +335,7 @@
     {
         "key": "useTokenTypePrefixes",
         "type": "boolean",
-        "default": true,
+        "default": false,
         "title": "Use token type prefixes",
         "description": "Prefix hierarchy with token type (e.g., 'color.group.primary').",
         "category": "Token names"

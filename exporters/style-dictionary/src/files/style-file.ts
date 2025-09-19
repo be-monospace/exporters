@@ -81,7 +81,7 @@ function createTokenValue(
  * @param allTokens - Optional array of all available tokens for reference resolution
  * @returns Structured object containing processed tokens, or null if no output should be generated
  */
-function processTokensToObject(
+export function processTokensToObject(
   tokens: Array<Token>,
   tokenGroups: Array<TokenGroup>,
   theme?: TokenTheme,
@@ -377,6 +377,239 @@ export function combinedStyleOutputFile(
   // For single file mode, themed files go directly in root with theme-based names
   const fileName = themePath ? `tokens.${themePath}.json` : 'tokens.json'
   const relativePath = './' // Put files directly in root folder
+
+  // Create and return the output file
+  return FileHelper.createTextFile({
+    relativePath: relativePath,
+    fileName: fileName,
+    content: content
+  })
+}
+
+/**
+ * Generates a style file for a specific collection.
+ * This function is used when fileStructure is set to 'separateByCollection'.
+ * 
+ * Features:
+ * - Generates separate files for each collection
+ * - Handles token filtering by collection
+ * - Supports theming
+ * - Includes token descriptions as comments
+ * - Formats values according to configuration
+ * 
+ * @param collection - The collection to generate tokens for
+ * @param tokens - Array of all tokens
+ * @param tokenGroups - Array of token groups for name generation
+ * @param themePath - Path for themed tokens (empty for base tokens)
+ * @param theme - Theme configuration when generating themed tokens
+ * @param collections - Array of design system collections
+ * @returns OutputTextFile with the generated content or null if no tokens exist
+ */
+export function collectionStyleOutputFile(
+  collection: DesignSystemCollection,
+  tokens: Array<Token>,
+  tokenGroups: Array<TokenGroup>,
+  type: TokenType,
+  themePath: string = '',
+  theme?: TokenTheme,
+  collections: Array<DesignSystemCollection> = []
+): OutputTextFile | null {
+  // Skip generating base token files unless:
+  // - Base values are explicitly enabled via exportBaseValues, or
+  // - We're generating themed files (themePath is present), or
+  // - We're using nested themes format
+  if (!exportConfiguration.exportBaseValues && !themePath && 
+      exportConfiguration.exportThemesAs === ThemeExportStyle.NestedThemes) {
+    return null
+  }
+
+  // Filter to only include tokens from the specified collection and type
+  let collectionTokens = tokens.filter((token) => 
+    token.collectionId === collection.persistentId && token.tokenType === type
+  )
+
+  // For themed token files:
+  // - Filter to only include tokens that are overridden in this theme
+  // - Skip generating the file if no tokens are themed (when configured)
+  if (themePath && theme && exportConfiguration.exportOnlyThemedTokens) {
+    collectionTokens = ThemeHelper.filterThemedTokens(collectionTokens, theme)
+    
+    if (collectionTokens.length === 0) {
+      return null
+    }
+  }
+
+  // Process tokens into a structured object
+  // Pass the full tokens array for reference resolution
+  const tokenObject = processTokensToObject(collectionTokens, tokenGroups, theme, collections, tokens)
+  if (!tokenObject) {
+    return null
+  }
+
+  // Generate the final JSON content with proper indentation
+  const content = JSON.stringify(tokenObject, null, exportConfiguration.indent)
+
+  // Create collection-safe file name with token type
+  const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
+  const typeName = exportConfiguration.customizeStyleFileNames
+    ? FileNameHelper.ensureFileExtension(exportConfiguration.styleFileNames[type], ".json").replace('.json', '')
+    : DEFAULT_STYLE_FILE_NAMES[type].replace('.json', '')
+  const fileName = themePath ? `${collectionName}-${typeName}.${themePath}.json` : `${collectionName}-${typeName}.json`
+  const relativePath = themePath ? `./${themePath}` : exportConfiguration.baseStyleFilePath
+
+  // Create and return the output file
+  return FileHelper.createTextFile({
+    relativePath: relativePath,
+    fileName: fileName,
+    content: content
+  })
+}
+
+/**
+ * Generates a combined style file for a specific collection containing all token types.
+ * This function is used when fileStructure is set to 'separateByCollection' and singleFile mode.
+ * 
+ * Features:
+ * - Combines all token types from a collection into a single file
+ * - Maintains token type grouping in the output
+ * - Supports theming
+ * - Includes token descriptions
+ * - Places files directly in root with collection-based names
+ * 
+ * Output structure examples:
+ * - No themes: core.json, components.json
+ * - Separate theme files: core.json, core.light.json, core.dark.json
+ * - Merged themes: core.json, core.themed.json
+ * - Nested themes: core.json (with all themes nested inside)
+ * 
+ * @param collection - The collection to generate tokens for
+ * @param tokens - Array of all tokens
+ * @param tokenGroups - Array of token groups for hierarchy
+ * @param themePath - Optional theme path for themed files
+ * @param theme - Optional theme configuration
+ * @param collections - Array of design system collections
+ * @returns OutputTextFile with the combined content or null if no output should be generated
+ */
+export function combinedCollectionStyleOutputFile(
+  collection: DesignSystemCollection,
+  tokens: Array<Token>,
+  tokenGroups: Array<TokenGroup>,
+  themePath: string = '',
+  theme?: TokenTheme,
+  collections: Array<DesignSystemCollection> = []
+): OutputTextFile | null {
+  // Skip generating base token files unless:
+  // - Base values are explicitly enabled via exportBaseValues, or
+  // - We're generating themed files (themePath is present), or
+  // - We're using nested themes format
+  if (!exportConfiguration.exportBaseValues && !themePath && 
+      exportConfiguration.exportThemesAs === ThemeExportStyle.NestedThemes) {
+    return null
+  }
+
+  // Filter to only include tokens from the specified collection
+  let collectionTokens = tokens.filter((token) => token.collectionId === collection.persistentId)
+
+  // Store original tokens for reference resolution
+  const originalTokens = [...tokens]
+
+  // For themed token files:
+  // - Filter to only include tokens that are overridden in this theme
+  // - Skip generating the file if no tokens are themed (when configured)
+  if (themePath && theme && exportConfiguration.exportOnlyThemedTokens) {
+    collectionTokens = ThemeHelper.filterThemedTokens(collectionTokens, theme)
+    
+    if (collectionTokens.length === 0) {
+      return null
+    }
+  }
+
+  // Process all tokens into a single structured object
+  // Pass the original tokens array for reference resolution
+  const tokenObject = processTokensToObject(collectionTokens, tokenGroups, theme, collections, originalTokens)
+  if (!tokenObject) {
+    return null
+  }
+
+  // Generate the final JSON content with proper indentation
+  const content = JSON.stringify(tokenObject, null, exportConfiguration.indent)
+
+  // Create collection-safe file name
+  const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
+  
+  // Create directory structure based on collection name and token content
+  // Special handling for different collection types
+  let relativePath = './'
+  let fileBaseName = collectionName
+  
+  // Check if this is a global or alias collection - keep as single files
+  if (collectionName === 'global' || collectionName === 'alias') {
+    // For global and alias, always put in root, never in theme directories
+    relativePath = './'
+    fileBaseName = collectionName
+  } else {
+    // For other collections, analyze token paths to determine structure
+    const hasBrandTokens = collectionTokens.some(token => 
+      token.tokenPath && token.tokenPath.some(path => 
+        path.toLowerCase().includes('brand') || 
+        ['zest', 'factor', 'chefsplate', 'everyplate', 'factorform', 'factorui2', 'goodchop', 'greenchef', 'hellofresh', 'thepetstable', 'youfoodz'].includes(path.toLowerCase())
+      )
+    )
+    
+    const hasComponentTokens = collectionName === 'components' || collectionName === 'component'
+    
+    if (hasBrandTokens) {
+      // This is a brand collection - create brand directory structure
+      relativePath = './brand'
+      
+      // Determine brand name from token paths or use theme
+      let brandName = themePath || 'default'
+      const brandToken = collectionTokens.find(token => 
+        token.tokenPath && token.tokenPath.some(path => 
+          ['zest', 'factor', 'chefsplate', 'everyplate', 'factorform', 'factorui2', 'goodchop', 'greenchef', 'hellofresh', 'thepetstable', 'youfoodz'].includes(path.toLowerCase())
+        )
+      )
+      
+      if (brandToken) {
+        const brandPath = brandToken.tokenPath?.find(path => 
+          ['zest', 'factor', 'chefsplate', 'everyplate', 'factorform', 'factorui2', 'goodchop', 'greenchef', 'hellofresh', 'thepetstable', 'youfoodz'].includes(path.toLowerCase())
+        )
+        if (brandPath) {
+          brandName = brandPath.toLowerCase()
+        }
+      }
+      
+      fileBaseName = brandName
+    } else if (hasComponentTokens) {
+      // This is a component collection - create components directory structure
+      relativePath = './components'
+      
+      // Determine component name from token groups
+      let componentName = 'component'
+      const componentToken = collectionTokens.find(token => token.parentGroupId)
+      
+      if (componentToken) {
+        const parentGroup = tokenGroups.find(group => group.id === componentToken.parentGroupId)
+        if (parentGroup) {
+          componentName = NamingHelper.codeSafeVariableName(parentGroup.name, StringCase.kebabCase)
+        }
+      }
+      
+      fileBaseName = componentName
+    } else {
+      // Default behavior for other collections
+      if (collectionName.includes('-')) {
+        const [category, subcategory] = collectionName.split('-', 2)
+        relativePath = `./${category}`
+        fileBaseName = subcategory
+      } else {
+        relativePath = './'
+        fileBaseName = collectionName
+      }
+    }
+  }
+  
+  const fileName = themePath ? `${fileBaseName}.${themePath}.json` : `${fileBaseName}.json`
 
   // Create and return the output file
   return FileHelper.createTextFile({
