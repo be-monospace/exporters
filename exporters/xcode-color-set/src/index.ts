@@ -57,6 +57,31 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     // Create a set of primitive collection names for efficient lookup
     const primitiveCollectionSet = new Set(exportConfiguration.primitiveCollections)
     
+    // Debug: Log the configuration and first few tokens
+    console.log("=== PRIMITIVE FILTERING DEBUG ===")
+    console.log("excludePrimitivesInThemePipelines:", exportConfiguration.excludePrimitivesInThemePipelines)
+    console.log("themesToApply.length:", themesToApply.length)
+    console.log("primitiveCollections:", exportConfiguration.primitiveCollections)
+    console.log("Total color tokens before filtering:", colorTokens.length)
+    
+    // Debug: Log first few tokens and their properties
+    colorTokens.slice(0, 3).forEach((token, index) => {
+      console.log(`Token ${index + 1}:`, {
+        name: token.name,
+        properties: token.properties,
+        propertiesLength: token.properties?.length || 0
+      })
+      if (token.properties && token.properties.length > 0) {
+        token.properties.forEach((prop, propIndex) => {
+          console.log(`  Property ${propIndex + 1}:`, {
+            name: prop.name,
+            keys: Object.keys(prop),
+            fullProperty: prop
+          })
+        })
+      }
+    })
+    
     // Filter out tokens that belong to primitive collections
     colorTokens = colorTokens.filter((token) => {
       // Check if the token has a "Collection" custom property
@@ -67,6 +92,11 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
           const collectionValue = (collectionProperty as any).value || 
                                  (collectionProperty as any).text || 
                                  (collectionProperty as any).data
+          console.log(`Token "${token.name}" has Collection property:`, {
+            property: collectionProperty,
+            value: collectionValue,
+            shouldExclude: primitiveCollectionSet.has(collectionValue)
+          })
           if (collectionValue) {
             // If the collection value matches any configured primitive collection, exclude the token
             return !primitiveCollectionSet.has(collectionValue)
@@ -77,6 +107,9 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
       // If no Collection property exists, keep the token
       return true
     })
+    
+    console.log("Total color tokens after filtering:", colorTokens.length)
+    console.log("=== END DEBUG ===")
   }
 
   // Prepare output files and, depending on configuration, prepare root path/file
