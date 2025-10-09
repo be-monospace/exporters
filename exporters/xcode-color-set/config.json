@@ -52,7 +52,7 @@
   {
     "key": "excludeCollectionsInThemePipelines",
     "type": "boolean",
-    "default": false,
+    "default": true,
     "title": "Exclude collections in theme pipelines",
     "description": "When enabled and themes are selected, tokens from specified collections will be excluded from export.",
     "category": "Theme Filtering"
@@ -60,7 +60,7 @@
   {
     "key": "excludedCollections",
     "type": "array",
-    "default": [],
+    "default": ["component"],
     "title": "Collections to exclude",
     "description": "Collection names to exclude when themes are selected (e.g., primitive, component). Enter collection names separated by commas.",
     "category": "Theme Filtering",

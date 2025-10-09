@@ -60,10 +60,22 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     
     const originalCount = colorTokens.length
     
+    // Debug: Show available collections and configuration
+    console.log("=== COLLECTION FILTERING DEBUG ===")
+    console.log("Available collections:", tokenCollections.map(c => c.name))
+    console.log("Excluded collections:", exportConfiguration.excludedCollections)
+    
     // Create a set of excluded collection names (lowercase) for efficient lookup
     const excludedCollectionNames = new Set(
       exportConfiguration.excludedCollections.map(name => name.toLowerCase().trim())
     )
+    console.log("Excluded collection names (normalized):", Array.from(excludedCollectionNames))
+    
+    // Debug: Show first few tokens and their collections
+    colorTokens.slice(0, 5).forEach((token, index) => {
+      const tokenCollection = tokenCollections.find(c => c.id === token.collectionId)
+      console.log(`Token ${index + 1}: "${token.name}" -> Collection: "${tokenCollection?.name || 'NO COLLECTION'}"`)
+    })
     
     // Filter tokens based on their collectionId
     colorTokens = colorTokens.filter((token) => {
@@ -72,6 +84,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
       
       // Exclude if the collection name matches any excluded collection (case-insensitive)
       if (tokenCollection && excludedCollectionNames.has(tokenCollection.name.toLowerCase().trim())) {
+        console.log(`EXCLUDING token "${token.name}" from collection "${tokenCollection.name}"`)
         return false // Exclude this token
       }
       
@@ -79,6 +92,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     })
     
     console.log(`Filtered out ${originalCount - colorTokens.length} tokens from excluded collections`)
+    console.log("=== END DEBUG ===")
   }
 
   // Prepare output files and, depending on configuration, prepare root path/file
