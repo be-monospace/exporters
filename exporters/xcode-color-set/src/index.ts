@@ -59,16 +59,23 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     
     // Filter out tokens that belong to primitive collections
     colorTokens = colorTokens.filter((token) => {
-      // Use TokenNameTracker to get the full hierarchy path for the token
-      const tracker = new TokenNameTracker()
-      const tokenPath = tracker.getTokenName(token, tokenGroups, StringCase.kebabCase, null, false)
+      // Check if the token has a "Collection" custom property
+      if (token.properties && token.properties.length > 0) {
+        const collectionProperty = token.properties.find(prop => prop.name === "Collection")
+        if (collectionProperty) {
+          // Try different possible property value access patterns
+          const collectionValue = (collectionProperty as any).value || 
+                                 (collectionProperty as any).text || 
+                                 (collectionProperty as any).data
+          if (collectionValue) {
+            // If the collection value matches any configured primitive collection, exclude the token
+            return !primitiveCollectionSet.has(collectionValue)
+          }
+        }
+      }
       
-      // Check if any part of the token path matches a primitive collection
-      const pathParts = tokenPath.split('/')
-      const hasPrimitiveCollection = pathParts.some(part => primitiveCollectionSet.has(part))
-      
-      // Keep token if it doesn't belong to a primitive collection
-      return !hasPrimitiveCollection
+      // If no Collection property exists, keep the token
+      return true
     })
   }
 
