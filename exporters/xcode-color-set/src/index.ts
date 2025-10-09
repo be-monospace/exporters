@@ -55,9 +55,8 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     })
   }
 
-  // Filter out tokens from excluded collections when themes are selected
+  // Filter out tokens from excluded collections
   if (exportConfiguration.excludeCollectionsInPipelines && 
-      themesToApply.length > 0 && 
       exportConfiguration.excludedCollections.length > 0) {
     
     const originalCount = colorTokens.length
