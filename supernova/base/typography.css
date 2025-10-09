@@ -1,0 +1,9 @@
+/**
+ * This file was generated automatically by Supernova.io and should not be changed manually.
+ * To modify the format or content of this file, please contact your design system team. 
+ */
+
+:root {
+  --typography-lg-test: 400 var(--dimension-example) "Inter";
+  --typography-lg-solution-test: 400 var(--dimension-example) "Instrument Sans";
+}
