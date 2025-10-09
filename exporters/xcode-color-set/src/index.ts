@@ -89,14 +89,35 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
         const collectionProperty = token.properties.find(prop => prop.name === "Collection")
         if (collectionProperty) {
           // Try different possible property value access patterns
-          const collectionValue = (collectionProperty as any).value || 
-                                 (collectionProperty as any).text || 
-                                 (collectionProperty as any).data
+          let collectionValue = null;
+          
+          // Pattern 1: Direct value
+          if ((collectionProperty as any).value && typeof (collectionProperty as any).value === 'string') {
+            collectionValue = (collectionProperty as any).value;
+          }
+          // Pattern 2: Nested value (data.value)
+          else if ((collectionProperty as any).data?.value) {
+            collectionValue = (collectionProperty as any).data.value;
+          }
+          // Pattern 3: Text property
+          else if ((collectionProperty as any).text) {
+            collectionValue = (collectionProperty as any).text;
+          }
+          // Pattern 4: Complex nested (value.value)
+          else if ((collectionProperty as any).value?.value) {
+            collectionValue = (collectionProperty as any).value.value;
+          }
+          // Pattern 5: Array values
+          else if ((collectionProperty as any).values && Array.isArray((collectionProperty as any).values)) {
+            collectionValue = (collectionProperty as any).values[0]; // Take first value
+          }
+          
           console.log(`Token "${token.name}" has Collection property:`, {
             property: collectionProperty,
-            value: collectionValue,
-            shouldExclude: primitiveCollectionSet.has(collectionValue)
+            extractedValue: collectionValue,
+            shouldExclude: collectionValue ? primitiveCollectionSet.has(collectionValue) : false
           })
+          
           if (collectionValue) {
             // If the collection value matches any configured primitive collection, exclude the token
             return !primitiveCollectionSet.has(collectionValue)
