@@ -59,10 +59,40 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     
     // Debug: Log the configuration and first few tokens
     console.log("=== PRIMITIVE FILTERING DEBUG ===")
-    console.log("excludePrimitivesInThemePipelines:", exportConfiguration.excludePrimitivesInThemePipelines)
-    console.log("themesToApply.length:", themesToApply.length)
-    console.log("primitiveCollections:", exportConfiguration.primitiveCollections)
-    console.log("Total color tokens before filtering:", colorTokens.length)
+    console.log("🔧 Configuration:")
+    console.log("  Full exportConfiguration object:", JSON.stringify(exportConfiguration, null, 2))
+    console.log("  excludePrimitivesInThemePipelines:", exportConfiguration.excludePrimitivesInThemePipelines)
+    console.log("  themesToApply.length:", themesToApply.length)
+    console.log("  themesToApply:", themesToApply)
+    console.log("  primitiveCollections:", exportConfiguration.primitiveCollections)
+    
+    // Additional debugging for configuration keys
+    console.log("🔍 Configuration keys:", Object.keys(exportConfiguration))
+    console.log("🔍 Has excludePrimitivesInThemePipelines?", 'excludePrimitivesInThemePipelines' in exportConfiguration)
+    console.log("🔍 Has primitiveCollections?", 'primitiveCollections' in exportConfiguration)
+    
+    // Debug: Show what configuration fields ARE available
+    console.log("🔍 Available configuration fields:")
+    Object.keys(exportConfiguration).forEach(key => {
+      console.log(`  ${key}:`, exportConfiguration[key])
+    })
+    
+    const originalCount = colorTokens.length
+    console.log("📊 Token counts:")
+    console.log("  Total color tokens before filtering:", originalCount)
+    
+    // Check if filtering conditions are met
+    const conditionsMet = exportConfiguration.excludePrimitivesInThemePipelines && 
+                         themesToApply.length > 0 && 
+                         exportConfiguration.primitiveCollections.length > 0
+    console.log("✅ Filtering conditions met:", conditionsMet)
+    
+    if (!conditionsMet) {
+      console.log("❌ Filtering will NOT be applied because:")
+      if (!exportConfiguration.excludePrimitivesInThemePipelines) console.log("  - excludePrimitivesInThemePipelines is false")
+      if (themesToApply.length === 0) console.log("  - No themes selected")
+      if (exportConfiguration.primitiveCollections.length === 0) console.log("  - No primitive collections configured")
+    }
     
     // Debug: Log first few tokens and their properties
     colorTokens.slice(0, 3).forEach((token, index) => {
@@ -129,7 +159,9 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
       return true
     })
     
-    console.log("Total color tokens after filtering:", colorTokens.length)
+    console.log("📊 Results:")
+    console.log("  Total color tokens after filtering:", colorTokens.length)
+    console.log("  Tokens excluded:", (originalCount - colorTokens.length), "← This should show the difference")
     console.log("=== END DEBUG ===")
   }
 

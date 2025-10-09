@@ -52,7 +52,7 @@
   {
     "key": "excludePrimitivesInThemePipelines",
     "type": "boolean",
-    "default": false,
+    "default": true,
     "title": "Exclude primitive tokens in theme pipelines",
     "description": "When enabled and themes are selected, primitive tokens (from specified collections) will be excluded from export to prevent redundant regeneration.",
     "category": "Theme Filtering"
@@ -60,7 +60,7 @@
   {
     "key": "primitiveCollections",
     "type": "array",
-    "default": [],
+    "default": ["component"],
     "title": "Primitive collections to exclude",
     "description": "List of collection names (e.g., 'colors primitives') whose tokens should be excluded when themes are selected.",
     "category": "Theme Filtering",
