@@ -55,15 +55,15 @@
     "default": false,
     "title": "Exclude collections in pipelines",
     "description": "When enabled, tokens from specified collections will be excluded from export.",
-    "category": "Theme Filtering"
+    "category": "Collection Filtering"
   },
   {
     "key": "excludedCollections",
     "type": "array",
-    "default": [],
+    "default": [""],
     "title": "Collections to exclude",
     "description": "Collection names to exclude (e.g., primitive, component, semantic). Enter collection names in each input filed to be exlcluded from the export.",
-    "category": "Theme Filtering",
+    "category": "Collection Filtering",
     "dependsOn": { "excludeCollectionsInPipelines": true }
   }
 ]
