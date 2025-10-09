@@ -12,7 +12,7 @@ export type ExporterConfiguration = {
   /** Name of the custom property used for write-back */
   propertyToWriteNameTo: string
   /** When enabled and themes are selected, exclude tokens from specified collections */
-  excludeCollectionsInThemePipelines: boolean
-  /** List of collection names whose tokens should be excluded when themes are selected */
+  excludeCollectionsInPipelines: boolean
+  /** List of collection names whose tokens should be excluded from export */
   excludedCollections: string[]
 }

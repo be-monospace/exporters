@@ -76,8 +76,47 @@ Defined in `config.json` (Pulsar exporter schema). Key options:
 - `folderNameStyle` (enum, default `pascalCase`): naming style for `.colorset` folders.
 - `writeNameToProperty` (boolean, default false): enable write-back of folder names to tokens.
 - `propertyToWriteNameTo` (string, default "iOS variable"): custom property key for write-back.
+- `excludeCollectionsInPipelines` (boolean, default false): exclude tokens from specified collections.
+- `excludedCollections` (array, default []): collection names to exclude from theme-specific exports.
 
 These are available in the Supernova exporter UI and can be overridden in pipelines.
+
+## Collection Filtering for Theme Pipelines
+
+### Use Case
+When running theme-specific exports (e.g., for different brands like Supernova Light/Dark), you might want to exclude primitive/base tokens that don't change between themes. This prevents redundant regeneration of tokens that are the same across all themes.
+
+### Setup Instructions
+
+#### 1. Organize Your Design System
+This filter will filter out by your **Figma collections** mapped to Supernova, examples:
+- Primitive tokens (base colors, neutrals) → "primitive" collection
+- Component-specific tokens → "component" collection  
+- Theme-dependent tokens → "semantic" collection
+
+#### 2. Configure the Exporter
+1. **Select themes**: Choose the themes you want to apply in "Data"
+2. **Enable collection filtering**: In "Configuration" set `excludeCollectionsInPipelines` to `true`
+3. **Specify collections to exclude**: Add collection names to `excludedCollections` (e.g., "primitive", "component")
+
+#### 3. Export Strategy suggestion
+- **Base export** (no themes): Export ALL tokens including primitives
+- **Theme-specific exports** (with themes): Export only theme-dependent tokens, excluding primitives
+
+#### 4. Example Workflow
+```
+Brand: Supernova
+├── Base Export (no themes)
+│   ├── primitive colors (neutral-100, neutral-200, etc.)
+│   ├── component colors (button-primary, button-secondary)
+│   └── semantic colors (text-primary, background-primary)
+│
+└── Theme Exports (with themes)
+    ├── Supernova 1.0 Light
+    │   └── semantic colors only (primitive/component excluded)
+    │
+    └── Supernova 1.0 Dark  
+        └── semantic colors only (primitive/component excluded)
 
 ## Write-back (keeps docs and Portal in sync)
 When `writeNameToProperty` is enabled, the exporter saves the generated folder name for each color token

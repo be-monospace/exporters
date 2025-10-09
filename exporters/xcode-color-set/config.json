@@ -50,20 +50,20 @@
     "dependsOn": { "writeNameToProperty": true }
   },
   {
-    "key": "excludeCollectionsInThemePipelines",
+    "key": "excludeCollectionsInPipelines",
     "type": "boolean",
-    "default": true,
-    "title": "Exclude collections in theme pipelines",
-    "description": "When enabled and themes are selected, tokens from specified collections will be excluded from export.",
+    "default": false,
+    "title": "Exclude collections in pipelines",
+    "description": "When enabled, tokens from specified collections will be excluded from export.",
     "category": "Theme Filtering"
   },
   {
     "key": "excludedCollections",
     "type": "array",
-    "default": ["primitive"],
+    "default": [],
     "title": "Collections to exclude",
-    "description": "Collection names to exclude when themes are selected (e.g., primitive, component). Enter collection names separated by commas.",
+    "description": "Collection names to exclude (e.g., primitive, component, semantic). Enter collection names in each input filed to be exlcluded from the export.",
     "category": "Theme Filtering",
-    "dependsOn": { "excludeCollectionsInThemePipelines": true }
+    "dependsOn": { "excludeCollectionsInPipelines": true }
   }
 ]
