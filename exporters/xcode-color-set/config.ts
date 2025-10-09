@@ -11,4 +11,8 @@ export type ExporterConfiguration = {
   writeNameToProperty: boolean
   /** Name of the custom property used for write-back */
   propertyToWriteNameTo: string
+  /** When enabled and themes are selected, exclude primitive tokens from specified collections */
+  excludePrimitivesInThemePipelines: boolean
+  /** List of collection names whose tokens should be excluded when themes are selected */
+  primitiveCollections: string[]
 }

@@ -37,7 +37,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
   let tokenGroups = await sdk.tokens.getTokenGroups(remoteVersionIdentifier)
 
   // Only color tokens are relevant for Xcode color sets
-  const colorTokens = tokens.filter((t) => t.tokenType === TokenType.color)
+  let colorTokens = tokens.filter((t) => t.tokenType === TokenType.color)
 
   // Resolve selected themes (if any)
   let themesToApply: Array<TokenTheme> = []
@@ -49,6 +49,26 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
         throw new Error(`Unable to find theme ${themeId}`)
       }
       return theme
+    })
+  }
+
+  // Filter out primitive tokens when themes are selected and filtering is enabled
+  if (exportConfiguration.excludePrimitivesInThemePipelines && themesToApply.length > 0 && exportConfiguration.primitiveCollections.length > 0) {
+    // Create a set of primitive collection names for efficient lookup
+    const primitiveCollectionSet = new Set(exportConfiguration.primitiveCollections)
+    
+    // Filter out tokens that belong to primitive collections
+    colorTokens = colorTokens.filter((token) => {
+      // Use TokenNameTracker to get the full hierarchy path for the token
+      const tracker = new TokenNameTracker()
+      const tokenPath = tracker.getTokenName(token, tokenGroups, StringCase.kebabCase, null, false)
+      
+      // Check if any part of the token path matches a primitive collection
+      const pathParts = tokenPath.split('/')
+      const hasPrimitiveCollection = pathParts.some(part => primitiveCollectionSet.has(part))
+      
+      // Keep token if it doesn't belong to a primitive collection
+      return !hasPrimitiveCollection
     })
   }
 
