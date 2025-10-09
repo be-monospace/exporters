@@ -32,9 +32,11 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     versionId: context.versionId,
   }
 
+  const filter = {brandId: context.brandId ?? undefined};
+
   // Fetch tokens, token groups, and token collections from the selected design system version
-  let tokens = await sdk.tokens.getTokens(remoteVersionIdentifier)
-  let tokenGroups = await sdk.tokens.getTokenGroups(remoteVersionIdentifier)
+  let tokens = await sdk.tokens.getTokens(remoteVersionIdentifier, filter)
+  let tokenGroups = await sdk.tokens.getTokenGroups(remoteVersionIdentifier, filter)
   let tokenCollections = await sdk.tokens.getTokenCollections(remoteVersionIdentifier)
 
   // Only color tokens are relevant for Xcode color sets
@@ -62,25 +64,25 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     
     // Debug: Show available collections and configuration
     console.log("=== COLLECTION FILTERING DEBUG ===")
-    console.log("Available collections:", tokenCollections.map(c => c.name))
-    console.log("Excluded collections:", exportConfiguration.excludedCollections)
+    console.log(`Available collections: ${tokenCollections.map(c => c.name)}`)
+    console.log(`Excluded collections: ${exportConfiguration.excludedCollections}`)
     
     // Create a set of excluded collection names (lowercase) for efficient lookup
     const excludedCollectionNames = new Set(
       exportConfiguration.excludedCollections.map(name => name.toLowerCase().trim())
     )
-    console.log("Excluded collection names (normalized):", Array.from(excludedCollectionNames))
+    console.log(`Excluded collection names (normalized): ${Array.from(excludedCollectionNames)}`)
     
     // Debug: Show first few tokens and their collections
     colorTokens.slice(0, 5).forEach((token, index) => {
-      const tokenCollection = tokenCollections.find(c => c.id === token.collectionId)
+      const tokenCollection = tokenCollections.find(c => c.persistentId === token.collectionId)
       console.log(`Token ${index + 1}: "${token.name}" -> Collection: "${tokenCollection?.name || 'NO COLLECTION'}"`)
     })
     
     // Filter tokens based on their collectionId
     colorTokens = colorTokens.filter((token) => {
       // Find the collection this token belongs to
-      const tokenCollection = tokenCollections.find(c => c.id === token.collectionId)
+      const tokenCollection = tokenCollections.find(c => c.persistentId === token.collectionId)
       
       // Exclude if the collection name matches any excluded collection (case-insensitive)
       if (tokenCollection && excludedCollectionNames.has(tokenCollection.name.toLowerCase().trim())) {
