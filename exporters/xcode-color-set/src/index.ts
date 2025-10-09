@@ -32,9 +32,10 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     versionId: context.versionId,
   }
 
-  // Fetch tokens and token groups from the selected design system version
+  // Fetch tokens, token groups, and token collections from the selected design system version
   let tokens = await sdk.tokens.getTokens(remoteVersionIdentifier)
   let tokenGroups = await sdk.tokens.getTokenGroups(remoteVersionIdentifier)
+  let tokenCollections = await sdk.tokens.getTokenCollections(remoteVersionIdentifier)
 
   // Only color tokens are relevant for Xcode color sets
   let colorTokens = tokens.filter((t) => t.tokenType === TokenType.color)
@@ -52,117 +53,32 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     })
   }
 
-  // Filter out primitive tokens when themes are selected and filtering is enabled
-  if (exportConfiguration.excludePrimitivesInThemePipelines && themesToApply.length > 0 && exportConfiguration.primitiveCollections.length > 0) {
-    // Create a set of primitive collection names for efficient lookup
-    const primitiveCollectionSet = new Set(exportConfiguration.primitiveCollections)
-    
-    // Debug: Log the configuration and first few tokens
-    console.log("=== PRIMITIVE FILTERING DEBUG ===")
-    console.log("🔧 Configuration:")
-    console.log("  Full exportConfiguration object:", JSON.stringify(exportConfiguration, null, 2))
-    console.log("  excludePrimitivesInThemePipelines:", exportConfiguration.excludePrimitivesInThemePipelines)
-    console.log("  themesToApply.length:", themesToApply.length)
-    console.log("  themesToApply:", themesToApply)
-    console.log("  primitiveCollections:", exportConfiguration.primitiveCollections)
-    
-    // Additional debugging for configuration keys
-    console.log("🔍 Configuration keys:", Object.keys(exportConfiguration))
-    console.log("🔍 Has excludePrimitivesInThemePipelines?", 'excludePrimitivesInThemePipelines' in exportConfiguration)
-    console.log("🔍 Has primitiveCollections?", 'primitiveCollections' in exportConfiguration)
-    
-    // Debug: Show what configuration fields ARE available
-    console.log("🔍 Available configuration fields:")
-    Object.keys(exportConfiguration).forEach(key => {
-      console.log(`  ${key}:`, exportConfiguration[key])
-    })
+  // Filter out tokens from excluded collections when themes are selected
+  if (exportConfiguration.excludeCollectionsInThemePipelines && 
+      themesToApply.length > 0 && 
+      exportConfiguration.excludedCollections.length > 0) {
     
     const originalCount = colorTokens.length
-    console.log("📊 Token counts:")
-    console.log("  Total color tokens before filtering:", originalCount)
     
-    // Check if filtering conditions are met
-    const conditionsMet = exportConfiguration.excludePrimitivesInThemePipelines && 
-                         themesToApply.length > 0 && 
-                         exportConfiguration.primitiveCollections.length > 0
-    console.log("✅ Filtering conditions met:", conditionsMet)
+    // Create a set of excluded collection names (lowercase) for efficient lookup
+    const excludedCollectionNames = new Set(
+      exportConfiguration.excludedCollections.map(name => name.toLowerCase().trim())
+    )
     
-    if (!conditionsMet) {
-      console.log("❌ Filtering will NOT be applied because:")
-      if (!exportConfiguration.excludePrimitivesInThemePipelines) console.log("  - excludePrimitivesInThemePipelines is false")
-      if (themesToApply.length === 0) console.log("  - No themes selected")
-      if (exportConfiguration.primitiveCollections.length === 0) console.log("  - No primitive collections configured")
-    }
-    
-    // Debug: Log first few tokens and their properties
-    colorTokens.slice(0, 3).forEach((token, index) => {
-      console.log(`Token ${index + 1}:`, {
-        name: token.name,
-        properties: token.properties,
-        propertiesLength: token.properties?.length || 0
-      })
-      if (token.properties && token.properties.length > 0) {
-        token.properties.forEach((prop, propIndex) => {
-          console.log(`  Property ${propIndex + 1}:`, {
-            name: prop.name,
-            keys: Object.keys(prop),
-            fullProperty: prop
-          })
-        })
-      }
-    })
-    
-    // Filter out tokens that belong to primitive collections
+    // Filter tokens based on their collectionId
     colorTokens = colorTokens.filter((token) => {
-      // Check if the token has a "Collection" custom property
-      if (token.properties && token.properties.length > 0) {
-        const collectionProperty = token.properties.find(prop => prop.name === "Collection")
-        if (collectionProperty) {
-          // Try different possible property value access patterns
-          let collectionValue = null;
-          
-          // Pattern 1: Direct value
-          if ((collectionProperty as any).value && typeof (collectionProperty as any).value === 'string') {
-            collectionValue = (collectionProperty as any).value;
-          }
-          // Pattern 2: Nested value (data.value)
-          else if ((collectionProperty as any).data?.value) {
-            collectionValue = (collectionProperty as any).data.value;
-          }
-          // Pattern 3: Text property
-          else if ((collectionProperty as any).text) {
-            collectionValue = (collectionProperty as any).text;
-          }
-          // Pattern 4: Complex nested (value.value)
-          else if ((collectionProperty as any).value?.value) {
-            collectionValue = (collectionProperty as any).value.value;
-          }
-          // Pattern 5: Array values
-          else if ((collectionProperty as any).values && Array.isArray((collectionProperty as any).values)) {
-            collectionValue = (collectionProperty as any).values[0]; // Take first value
-          }
-          
-          console.log(`Token "${token.name}" has Collection property:`, {
-            property: collectionProperty,
-            extractedValue: collectionValue,
-            shouldExclude: collectionValue ? primitiveCollectionSet.has(collectionValue) : false
-          })
-          
-          if (collectionValue) {
-            // If the collection value matches any configured primitive collection, exclude the token
-            return !primitiveCollectionSet.has(collectionValue)
-          }
-        }
+      // Find the collection this token belongs to
+      const tokenCollection = tokenCollections.find(c => c.id === token.collectionId)
+      
+      // Exclude if the collection name matches any excluded collection (case-insensitive)
+      if (tokenCollection && excludedCollectionNames.has(tokenCollection.name.toLowerCase().trim())) {
+        return false // Exclude this token
       }
       
-      // If no Collection property exists, keep the token
-      return true
+      return true // Keep this token
     })
     
-    console.log("📊 Results:")
-    console.log("  Total color tokens after filtering:", colorTokens.length)
-    console.log("  Tokens excluded:", (originalCount - colorTokens.length), "← This should show the difference")
-    console.log("=== END DEBUG ===")
+    console.log(`Filtered out ${originalCount - colorTokens.length} tokens from excluded collections`)
   }
 
   // Prepare output files and, depending on configuration, prepare root path/file

@@ -50,20 +50,20 @@
     "dependsOn": { "writeNameToProperty": true }
   },
   {
-    "key": "excludePrimitivesInThemePipelines",
+    "key": "excludeCollectionsInThemePipelines",
     "type": "boolean",
-    "default": true,
-    "title": "Exclude primitive tokens in theme pipelines",
-    "description": "When enabled and themes are selected, primitive tokens (from specified collections) will be excluded from export to prevent redundant regeneration.",
+    "default": false,
+    "title": "Exclude collections in theme pipelines",
+    "description": "When enabled and themes are selected, tokens from specified collections will be excluded from export.",
     "category": "Theme Filtering"
   },
   {
-    "key": "primitiveCollections",
+    "key": "excludedCollections",
     "type": "array",
-    "default": ["component"],
-    "title": "Primitive collections to exclude",
-    "description": "List of collection names (e.g., 'colors primitives') whose tokens should be excluded when themes are selected.",
+    "default": [],
+    "title": "Collections to exclude",
+    "description": "Collection names to exclude when themes are selected (e.g., primitive, component). Enter collection names separated by commas.",
     "category": "Theme Filtering",
-    "dependsOn": { "excludePrimitivesInThemePipelines": true }
+    "dependsOn": { "excludeCollectionsInThemePipelines": true }
   }
 ]
