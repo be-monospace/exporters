@@ -1,6 +1,6 @@
 {
   "id": "supernovaio.exporter-xcode-color-set",
-  "name": "Xcode Color Set (PoC)",
+  "name": "Xcode Color Set (PoC)- Collection Filtering",
   "description": "Export color tokens into Xcode .xcassets color sets, per-token arrays.",
   "author": "Supernova.io",
   "organization": "Supernova.io",
