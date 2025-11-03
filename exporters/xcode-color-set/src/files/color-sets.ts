@@ -7,10 +7,10 @@ import { FileHelper, NamingHelper, StringCase, TokenNameTracker } from "@superno
  * This module converts Supernova color tokens into the Apple asset catalog layout:
  *   <root or rootCatalogPath>/
  *     <folderName>.colorset/
- *       Contents.json   // JSON array with base + optional dark appearance entries
+ *       Contents.json   // JSON object with colors array + info block
  *
- * It intentionally uses a compact array format for Contents.json (as requested for this PoC),
- * rather than the usual Xcode wrapper object with an "info" key.
+ * Uses the standard Xcode format with a "colors" array containing base + optional dark appearance entries,
+ * wrapped in an object with an "info" key.
  *
  * Naming & uniqueness
  * - Folder names are produced using a TokenNameTracker (stable & unique per export)
@@ -99,21 +99,27 @@ function extractRgbaFromToken(token: Token): { r: number; g: number; b: number; 
  * Returns
  * - OutputTextFile describing where to write the `Contents.json`, or null if input token is not a color
  *
- * File content structure (array):
- * [
- *   {
- *     "idiom": "universal",
- *     "color": {
- *       "color-space": "srgb",
- *       "components": { "red": "0xRR", "green": "0xGG", "blue": "0xBB", "alpha": "0.000" }
+ * File content structure (object):
+ * {
+ *   "colors": [
+ *     {
+ *       "idiom": "universal",
+ *       "color": {
+ *         "color-space": "srgb",
+ *         "components": { "red": "0xRR", "green": "0xGG", "blue": "0xBB", "alpha": "0.000" }
+ *       }
+ *     },
+ *     {
+ *       "appearances": [{ "appearance": "luminosity", "value": "dark" }],
+ *       "idiom": "universal",
+ *       "color": { ...themed components... }
  *     }
- *   },
- *   {
- *     "appearances": [{ "appearance": "luminosity", "value": "dark" }],
- *     "idiom": "universal",
- *     "color": { ...themed components... }
+ *   ],
+ *   "info": {
+ *     "version": 1,
+ *     "author": "xcode"
  *   }
- * ]
+ * }
  *
  * Implementation notes
  * - The order of entries is significant: base first, then dark appearance(s)
@@ -182,7 +188,15 @@ export function createPerTokenFile(
   const fileSafeName = NamingHelper.codeSafeVariableName(baseName, nameStyle)
 
   // Write token-specific color set file. When rootPath is empty, we write to the export root.
-  const content = JSON.stringify(entries, null, 2)
+  // Wrap entries array in an object with "colors" property (standard Xcode format)
+  const colorSetObject = {
+    colors: entries,
+    info: {
+      version: 1,
+      author: "xcode"
+    }
+  }
+  const content = JSON.stringify(colorSetObject, null, 2)
   return FileHelper.createTextFile({
     relativePath: rootPath ? `./${rootPath}/${fileSafeName}.colorset` : `./${fileSafeName}.colorset`,
     fileName: "Contents.json",

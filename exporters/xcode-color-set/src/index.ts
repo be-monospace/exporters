@@ -10,9 +10,11 @@ import { ExporterConfiguration } from "../config"
  * - Reads color tokens from the current design system version
  * - Optionally applies selected themes to compute themed values per token
  * - Generates an Xcode asset catalog with one color set per color token
- * - Each color set file (Contents.json) is an array with:
- *   - One base entry (universal)
- *   - One themed entry marked as { appearances: [{ appearance: "luminosity", value: "dark" }] }
+ * - Each color set file (Contents.json) is an object with:
+ *   - A "colors" array containing:
+ *     - One base entry (universal)
+ *     - One themed entry marked as { appearances: [{ appearance: "luminosity", value: "dark" }] }
+ *   - An "info" object with version and author metadata
  *
  * Theme application rules (per request):
  * - If there is only 1 selected theme: apply it as dark appearance (single themed entry)
