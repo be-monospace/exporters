@@ -542,11 +542,15 @@ export function combinedCollectionStyleOutputFile(
   let relativePath = './'
   let fileBaseName = collectionName
   
-  // Check if this is a global or alias collection - keep as single files
+  // Check if this is a global, alias, or shared collection - keep as single files
   if (collectionName === 'global' || collectionName === 'alias') {
     // For global and alias, always put in root, never in theme directories
     relativePath = './'
     fileBaseName = collectionName
+  } else if (collectionName === 'shared' || collectionName === 'shared-alias') {
+    // For shared collections, always put in root as shared-alias.json
+    relativePath = './'
+    fileBaseName = 'shared-alias'
   } else {
     // For other collections, analyze token paths to determine structure
     const hasBrandTokens = collectionTokens.some(token => 

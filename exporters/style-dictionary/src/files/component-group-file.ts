@@ -40,37 +40,41 @@ export function componentGroupStyleOutputFiles(
   }
 
   // Group tokens by their component group (button, accordion, etc.)
+  // We identify the top-level component group by finding the root group in the hierarchy
   const tokensByComponentGroup = new Map<string, Array<Token>>()
   
-  
-  collectionTokens.forEach((token, index) => {
-    if (token.parentGroupId) {
-      // Find the component group by looking for known component names in the hierarchy
-      let componentGroupId: string = token.parentGroupId
-      let currentGroupId: string | null = token.parentGroupId
-      
-      // Traverse up the hierarchy looking for component groups
-      while (currentGroupId) {
-        const currentGroup = tokenGroups.find(group => group.id === currentGroupId)
-        if (!currentGroup) break
-        
-        // Check if this group name matches a component name
-        const groupName = currentGroup.name.toLowerCase()
-        const knownComponents = ['button', 'accordion', 'badge', 'card', 'input', 'dialog', 'dropdown', 'checkbox', 'radio', 'switch', 'tab', 'toast', 'tooltip']
-        
-        if (knownComponents.includes(groupName)) {
-          componentGroupId = currentGroupId
-          break
-        }
-        
-        currentGroupId = currentGroup.parentGroupId
-      }
-      
-      if (!tokensByComponentGroup.has(componentGroupId)) {
-        tokensByComponentGroup.set(componentGroupId, [])
-      }
-      tokensByComponentGroup.get(componentGroupId)!.push(token)
+  collectionTokens.forEach((token) => {
+    if (!token.parentGroupId) {
+      // Token has no parent group, skip it or handle separately
+      return
     }
+    
+    // Find the root component group by traversing up the hierarchy
+    // The root group is the one with no parentGroupId (top of hierarchy)
+    let rootGroupId: string | null = null
+    let currentGroupId: string | null = token.parentGroupId
+    
+    // Traverse up the hierarchy to find the root group
+    while (currentGroupId) {
+      const currentGroup = tokenGroups.find(group => group.id === currentGroupId)
+      if (!currentGroup) break
+      
+      // If this group has no parent, it's the root component group
+      if (!currentGroup.parentGroupId) {
+        rootGroupId = currentGroupId
+        break
+      }
+      
+      currentGroupId = currentGroup.parentGroupId
+    }
+    
+    // If we found a root group, use it; otherwise fall back to the immediate parent
+    const componentGroupId = rootGroupId || token.parentGroupId
+    
+    if (!tokensByComponentGroup.has(componentGroupId)) {
+      tokensByComponentGroup.set(componentGroupId, [])
+    }
+    tokensByComponentGroup.get(componentGroupId)!.push(token)
   })
 
 

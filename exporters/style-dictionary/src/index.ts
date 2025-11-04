@@ -132,20 +132,20 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
             tokens.some(token => token.collectionId === collection.persistentId)
           )
           
-          // Separate global/alias collections from other collections
+          // Separate global/alias/shared collections from other collections
           const globalAliasCollections = collectionsWithTokens.filter(collection => {
             const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
-            return collectionName === 'global' || collectionName === 'alias'
+            return collectionName === 'global' || collectionName === 'alias' || collectionName === 'shared' || collectionName === 'shared-alias'
           })
           
           const otherCollections = collectionsWithTokens.filter(collection => {
             const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
-            return collectionName !== 'global' && collectionName !== 'alias'
+            return collectionName !== 'global' && collectionName !== 'alias' && collectionName !== 'shared' && collectionName !== 'shared-alias'
           })
           
           const valueObjectFiles = collectionsWithTokens.map(collection => {
             const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
-            const isGlobalOrAlias = collectionName === 'global' || collectionName === 'alias'
+            const isGlobalOrAlias = collectionName === 'global' || collectionName === 'alias' || collectionName === 'shared' || collectionName === 'shared-alias'
             
             // For global/alias collections, only create base files (no theme processing)
             if (isGlobalOrAlias) {
@@ -265,7 +265,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
           // Separate collections by type
           const globalAliasCollections = collectionsWithTokens.filter(collection => {
             const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
-            return collectionName === 'global' || collectionName === 'alias'
+            return collectionName === 'global' || collectionName === 'alias' || collectionName === 'shared' || collectionName === 'shared-alias'
           })
           
           const componentsCollections = collectionsWithTokens.filter(collection => {
@@ -284,6 +284,8 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
             const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
             return collectionName !== 'global' && 
                    collectionName !== 'alias' && 
+                   collectionName !== 'shared' &&
+                   collectionName !== 'shared-alias' &&
                    collectionName !== 'components' && 
                    collectionName !== 'component' &&
                    !collectionName.startsWith('brand-') &&
@@ -295,39 +297,13 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
             const themedTokens = sdk.tokens.computeTokensByApplyingThemes(tokens, tokens, [theme])
             const themeName = ThemeHelper.getThemeIdentifier(theme, StringCase.kebabCase)
             
-            // Generate component theme files organized by brand
-            const componentThemeFiles = componentsCollections.flatMap(collection => {
-              // Get the base component files
-              const baseComponentFiles = componentGroupStyleOutputFiles(collection, tokens, tokenGroups, '', undefined, tokenCollections)
-              
-              // Create themed versions in brand/themeName/ directory
-              return baseComponentFiles.map(baseFile => {
-                // Get the themed tokens for this collection
-                const collectionThemedTokens = themedTokens.filter(token => token.collectionId === collection.persistentId)
-                
-                // Process themed tokens into structured object
-                const themedTokenObject = processTokensToObject(collectionThemedTokens, tokenGroups, theme, tokenCollections, tokens)
-                if (!themedTokenObject) return null
-                
-                const content = JSON.stringify(themedTokenObject, null, exportConfiguration.indent)
-                
-                // Extract component name from base file name (e.g., "button.json" -> "button")
-                const componentName = (baseFile as any).name?.replace('.json', '') || 'unknown'
-                
-                return FileHelper.createTextFile({
-                  relativePath: `./brand/${themeName}`,
-                  fileName: `${componentName}.json`,
-                  content: content
-                })
-              }).filter(f => f !== null)
-            })
-            
-            // Generate theme files for other collections (non-components)
+            // Component tokens should not be in brand folders - they stay in components/ directory
+            // Only generate theme files for other collections (non-components)
             const otherThemeFiles = otherCollections.map(collection => 
               combinedCollectionStyleOutputFile(collection, themedTokens, tokenGroups, themeName, theme, tokenCollections)
             )
             
-            return [...componentThemeFiles, ...otherThemeFiles]
+            return otherThemeFiles
           })
           
           // Generate brand files from themes (since brands are themes, not collections)
@@ -365,6 +341,8 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
                 const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
                 return collectionName !== 'global' && 
                        collectionName !== 'alias' && 
+                       collectionName !== 'shared' &&
+                       collectionName !== 'shared-alias' &&
                        collectionName !== 'components' && 
                        collectionName !== 'component'
               }).map(collection => 
@@ -438,15 +416,15 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
             tokens.some(token => token.collectionId === collection.persistentId)
           )
           
-          // Separate global/alias collections from other collections
+          // Separate global/alias/shared collections from other collections
           const globalAliasCollections = collectionsWithTokens.filter(collection => {
             const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
-            return collectionName === 'global' || collectionName === 'alias'
+            return collectionName === 'global' || collectionName === 'alias' || collectionName === 'shared' || collectionName === 'shared-alias'
           })
           
           const otherCollections = collectionsWithTokens.filter(collection => {
             const collectionName = NamingHelper.codeSafeVariableName(collection.name, StringCase.kebabCase)
-            return collectionName !== 'global' && collectionName !== 'alias'
+            return collectionName !== 'global' && collectionName !== 'alias' && collectionName !== 'shared' && collectionName !== 'shared-alias'
           })
           
           const baseTokenFiles = exportConfiguration.exportBaseValues
