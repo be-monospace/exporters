@@ -1,0 +1,15 @@
+{
+  "_comment": "This file was generated automatically by Supernova.io and should not be changed manually. To modify the format or content of this file, please contact your design system team.",
+  "typography": {
+    "typography": {
+      "lgTest": {
+        "value": "400 {dimension.dimension.example} Inter",
+        "type": "typography"
+      },
+      "lgSolutionTest": {
+        "value": "400 {dimension.dimension.example} Instrument Sans",
+        "type": "typography"
+      }
+    }
+  }
+}

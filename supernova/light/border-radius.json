@@ -1,0 +1,31 @@
+{
+  "_comment": "This file was generated automatically by Supernova.io and should not be changed manually. To modify the format or content of this file, please contact your design system team.",
+  "borderRadius": {
+    "borderRadius": {
+      "none": {
+        "value": "0px",
+        "type": "borderRadius"
+      },
+      "small": {
+        "value": "3px",
+        "type": "borderRadius"
+      },
+      "default": {
+        "value": "5px",
+        "type": "borderRadius"
+      },
+      "medium": {
+        "value": "7px",
+        "type": "borderRadius"
+      },
+      "large": {
+        "value": "12px",
+        "type": "borderRadius"
+      },
+      "full": {
+        "value": "999px",
+        "type": "borderRadius"
+      }
+    }
+  }
+}
