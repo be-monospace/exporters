@@ -137,6 +137,61 @@
         }
     },
     {
+        "key": "customizeTokenUnits",
+        "type": "boolean",
+        "default": false,
+        "title": "Customize units per token type",
+        "description": "Override the unit (px or rem) for specific token types individually.",
+        "category": "Token values",
+        "dependsOn": {
+            "forceRemUnit": true
+        }
+    },
+    {
+        "key": "tokenUnitOverrides",
+        "type": "object",
+        "title": "Token type units",
+        "description": "Set unit per token type. Use \"px\" or \"rem\". Types not listed fall back to the global Force REM setting.",
+        "category": "Token values",
+        "dependsOn": {
+            "customizeTokenUnits": true
+        },
+        "default": {
+            "Blur": "px",
+            "BorderRadius": "px",
+            "BorderWidth": "px",
+            "Dimension": "px",
+            "Duration": "px",
+            "FontSize": "rem",
+            "LetterSpacing": "px",
+            "LineHeight": "px",
+            "ParagraphSpacing": "px",
+            "Size": "px",
+            "Space": "px",
+            "ZIndex": "px"
+        },
+        "allowedKeys": {
+            "options": [
+                "Blur",
+                "BorderRadius",
+                "BorderWidth",
+                "Dimension",
+                "Duration",
+                "FontSize",
+                "LetterSpacing",
+                "LineHeight",
+                "ParagraphSpacing",
+                "Size",
+                "Space",
+                "ZIndex"
+            ],
+            "type": "string"
+        },
+        "allowedValues": {
+            "type": "string"
+        }
+    },
+    {
         "key": "useReferences",
         "type": "boolean",
         "default": true,

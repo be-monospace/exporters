@@ -66,6 +66,10 @@ export type ExporterConfiguration = {
   forceRemUnit: boolean
   /** Base pixel value for rem conversion (default: 16) */
   remBase: number
+  /** When enabled, allows per-token-type unit override (px or rem) */
+  customizeTokenUnits: boolean
+  /** Per-token-type unit override. Values must be "px" or "rem". Falls back to forceRemUnit when not set for a type */
+  tokenUnitOverrides: Partial<Record<TokenType, string>>
   /** When enabled, allows customization of style file names */
   customizeStyleFileNames: boolean
   /** When enabled, allows customization of token prefixes */

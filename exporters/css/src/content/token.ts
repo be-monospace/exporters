@@ -15,6 +15,16 @@ export function getTokenPrefix(tokenType: TokenType): string {
   return exportConfiguration.customizeTokenPrefixes ? exportConfiguration.tokenPrefixes[tokenType] : DEFAULT_TOKEN_PREFIXES[tokenType]
 }
 
+function shouldForceRem(tokenType: TokenType): boolean {
+  if (exportConfiguration.customizeTokenUnits) {
+    const override = exportConfiguration.tokenUnitOverrides?.[tokenType]
+    if (override !== undefined) {
+      return override.toLowerCase() === 'rem'
+    }
+  }
+  return exportConfiguration.forceRemUnit
+}
+
 /**
  * Analyzes tokens to identify which color tokens need RGB utility versions.
  * A color token needs an RGB utility if it's referenced by shadow, border, or gradient tokens
@@ -90,7 +100,7 @@ export function getTokenRawValue(
     allowReferences: false, // Don't follow references to avoid infinite loops
     decimals: exportConfiguration.colorPrecision,
     colorFormat: exportConfiguration.colorFormat,
-    forceRemUnit: exportConfiguration.forceRemUnit,
+    forceRemUnit: shouldForceRem(token.tokenType),
     remBase: exportConfiguration.remBase,
     tokenToVariableRef: () => "", // Stub function that never gets called since allowReferences is false
   })
@@ -175,7 +185,7 @@ export function convertedToken(
     allowReferences: exportConfiguration.useReferences,
     decimals: exportConfiguration.colorPrecision,
     colorFormat: exportConfiguration.colorFormat,
-    forceRemUnit: exportConfiguration.forceRemUnit,
+    forceRemUnit: shouldForceRem(token.tokenType),
     remBase: exportConfiguration.remBase,
     // Custom handler for token references - converts them to CSS var() syntax
     // When context.needsRgb is true, returns RGB utility variable for color tokens
