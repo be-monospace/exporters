@@ -2,7 +2,7 @@ import { DesignSystemCollection } from "@supernovaio/sdk-exporters/build/sdk-typ
 import { NamingHelper, CSSHelper, GeneralHelper } from "@supernovaio/export-utils"
 import { Token, TokenGroup, TokenType } from "@supernovaio/sdk-exporters"
 import { exportConfiguration } from ".."
-import { DEFAULT_TOKEN_PREFIXES } from "../constants/defaults"
+import { DEFAULT_TOKEN_PREFIXES, DEFAULT_TOKEN_UNIT_OVERRIDES } from "../constants/defaults"
 import { TokenNameStructure } from "../../config"
 
 /**
@@ -17,7 +17,7 @@ export function getTokenPrefix(tokenType: TokenType): string {
 
 function shouldForceRem(tokenType: TokenType): boolean {
   if (exportConfiguration.customizeTokenUnits) {
-    const override = exportConfiguration.tokenUnitOverrides?.[tokenType]
+    const override = exportConfiguration.tokenUnitOverrides?.[tokenType] ?? DEFAULT_TOKEN_UNIT_OVERRIDES[tokenType]
     if (override !== undefined) {
       return override.toLowerCase() === 'rem'
     }
