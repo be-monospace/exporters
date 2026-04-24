@@ -28,21 +28,6 @@ export const DEFAULT_STYLE_FILE_NAMES: Record<TokenType, string> = {
   Blur: "blur.css"
 }
 
-export const DEFAULT_TOKEN_UNIT_OVERRIDES: Partial<Record<TokenType, string>> = {
-  Blur: "px",
-  BorderRadius: "px",
-  BorderWidth: "px",
-  Dimension: "px",
-  Duration: "px",
-  FontSize: "rem",
-  LetterSpacing: "px",
-  LineHeight: "px",
-  ParagraphSpacing: "px",
-  Size: "px",
-  Space: "px",
-  ZIndex: "px",
-}
-
 export const DEFAULT_TOKEN_PREFIXES: Record<TokenType, string> = {
   Color: "color",
   Typography: "typography",
