@@ -151,7 +151,7 @@
         "key": "tokenUnitOverrides",
         "type": "object",
         "title": "Token type units",
-        "description": "Set unit per token type. Use \"px\" or \"rem\". Types not listed fall back to the global Force REM setting.",
+        "description": "Set unit per token type. Use \"px\" in input to change unit to px, types not listed fall back to the global Force REM setting.",
         "category": "Token values",
         "dependsOn": {
             "customizeTokenUnits": true
