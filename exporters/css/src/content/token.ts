@@ -18,7 +18,7 @@ export function getTokenPrefix(tokenType: TokenType): string {
 function shouldForceRem(tokenType: TokenType): boolean {
   if (exportConfiguration.customizeTokenUnits) {
     const override = exportConfiguration.tokenUnitOverrides?.[tokenType]
-    if (override !== undefined) {
+    if (override !== undefined && override.trim() !== '') {
       return override.toLowerCase() === 'rem'
     }
   }

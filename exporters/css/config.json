@@ -156,20 +156,7 @@
         "dependsOn": {
             "customizeTokenUnits": true
         },
-        "default": {
-            "Blur": "px",
-            "BorderRadius": "px",
-            "BorderWidth": "px",
-            "Dimension": "px",
-            "Duration": "px",
-            "FontSize": "rem",
-            "LetterSpacing": "px",
-            "LineHeight": "px",
-            "ParagraphSpacing": "px",
-            "Size": "px",
-            "Space": "px",
-            "ZIndex": "px"
-        },
+        "default": {},
         "allowedKeys": {
             "options": [
                 "Blur",
