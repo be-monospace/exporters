@@ -1,0 +1,14 @@
+{
+  "id": "supernovaio.exporter-documentation-markdown",
+  "name": "Documentation to Markdown",
+  "description": "Export documentation groups as folders and pages as Markdown files, preserving hierarchy.",
+  "author": "Supernova.io",
+  "organization": "Supernova.io",
+  "homepage": "https://supernova.io",
+  "version": "0.0.1",
+  "usesBrands": false,
+  "usesThemes": false,
+  "executable": "/dist/build.js",
+  "engine": "latest",
+  "tags": ["Documentation", "Markdown", "Docs", "New", "Beta"]
+}

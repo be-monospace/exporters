@@ -1,0 +1,59 @@
+[
+  {
+    "key": "outputFolder",
+    "type": "string",
+    "default": "documentation",
+    "title": "Output folder",
+    "description": "Destination folder for generated Markdown files, relative to the export root."
+  },
+  {
+    "key": "markdownFlavor",
+    "type": "enum",
+    "options": ["commonmark", "github"],
+    "default": "github",
+    "title": "Markdown flavor",
+    "description": "Dialect used when converting documentation blocks to Markdown."
+  },
+  {
+    "key": "includedDocumentationGroupPersistentIds",
+    "type": "array",
+    "default": [],
+    "title": "Documentation groups to export",
+    "description": "Optional list of documentation group persistent IDs. When empty, the entire documentation tree is exported. When set, only pages that belong to these groups (or their nested groups) are exported; folder paths are relative to the deepest selected ancestor so the output stays compact."
+  },
+  {
+    "key": "excludeHiddenAndPrivate",
+    "type": "boolean",
+    "default": true,
+    "title": "Exclude hidden and private pages",
+    "description": "When enabled, documentation pages marked hidden or private are not written to the export."
+  },
+  {
+    "key": "skillExportGroupPersistentIds",
+    "type": "array",
+    "default": [],
+    "title": "Groups that export SKILL.md",
+    "description": "Persistent IDs of documentation groups that receive an extra SKILL.md file in their export folder. The file aggregates every page in that group's subtree (documentation order), with YAML frontmatter suitable for Cursor-style agent skills. Leave empty to disable."
+  },
+  {
+    "key": "skillFrontmatterName",
+    "type": "string",
+    "default": "",
+    "title": "Skill name (YAML)",
+    "description": "Optional `name` field in SKILL.md frontmatter. When empty, the documentation group's title is used."
+  },
+  {
+    "key": "skillFrontmatterDescription",
+    "type": "string",
+    "default": "",
+    "title": "Skill description (YAML)",
+    "description": "Optional `description` field in SKILL.md frontmatter. When empty, the key is omitted from the YAML block."
+  },
+  {
+    "key": "skillIncludePageHeadings",
+    "type": "boolean",
+    "default": true,
+    "title": "Page headings inside SKILL.md",
+    "description": "When enabled, each page section starts with `## {page title}` before the converted page body."
+  }
+]
