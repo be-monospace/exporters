@@ -55,5 +55,13 @@
     "default": true,
     "title": "Page headings inside SKILL.md",
     "description": "When enabled, each page section starts with `## {page title}` before the converted page body."
+  },
+  {
+    "key": "tokenExportFormat",
+    "type": "enum",
+    "options": ["table", "list", "comment"],
+    "default": "table",
+    "title": "Token blocks in Markdown",
+    "description": "How Token, Token list, and Token group documentation blocks are exported: a pipe table (name, resolved value, alias), a bullet list, or HTML comments with ids only."
   }
 ]

@@ -5,13 +5,17 @@ import {
   DocumentationLegacyItemType,
   DocumentationLegacyPage,
   PulsarContext,
+  RemoteVersionIdentifier,
   Supernova,
+  Token,
+  TokenTheme,
 } from "@supernovaio/sdk-exporters"
 import { ExporterConfiguration } from "../config"
 import { fileBaseNameForPage, folderSegmentForGroup, folderSegmentsForGroupFilter } from "./paths"
 import { loadDocumentationRootGroup } from "./load-documentation-root"
-import { legacyPageToMarkdown } from "./legacy-page-to-markdown"
+import { legacyPageToMarkdown, type LegacyPageMarkdownContext } from "./legacy-page-to-markdown"
 import { buildSkillMarkdown } from "./skill-md"
+import { buildTokenExportContext, buildTokenKeyMap } from "./token-export"
 
 export const exportConfiguration = Pulsar.exportConfig<ExporterConfiguration>()
 
@@ -115,7 +119,73 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     versionId: context.versionId,
   }
 
-  const rootGroup = await loadDocumentationRootGroup(sdk, remote)
+  const remoteVersion: RemoteVersionIdentifier = {
+    designSystemId: context.dsId,
+    versionId: context.versionId,
+  }
+
+  const brandFilter = context.brandId ? { brandId: context.brandId } : undefined
+
+  const [rootGroup, tokens, tokenGroups, tokenThemes] = await Promise.all([
+    loadDocumentationRootGroup(sdk, remote),
+    sdk.tokens.getTokens(remoteVersion, brandFilter),
+    sdk.tokens.getTokenGroups(remoteVersion, brandFilter),
+    sdk.tokens.getTokenThemes(remoteVersion),
+  ])
+
+  const themeNameById = new Map<string, string>()
+  /** Documentation blocks often reference `persistentId`; pipeline may use version or persistent ids. */
+  const themeByAnyId = new Map<string, TokenTheme>()
+  const themesInScope =
+    context.brandId != null && context.brandId.length > 0
+      ? tokenThemes.filter((t) => t.brandId === context.brandId)
+      : tokenThemes
+
+  for (const th of themesInScope) {
+    themeNameById.set(th.id, th.name)
+    themeNameById.set(th.idInVersion, th.name)
+    themeByAnyId.set(th.id, th)
+    themeByAnyId.set(th.idInVersion, th)
+    const raw = th.toWriteObject() as { persistentId?: string }
+    if (raw.persistentId) {
+      themeByAnyId.set(raw.persistentId, th)
+      themeNameById.set(raw.persistentId, th.name)
+    }
+  }
+
+  const pipelineFromIds = (context.themeIds ?? []).map((id) => String(id).trim()).filter((id) => id.length > 0)
+  const pipelineThemeIds =
+    pipelineFromIds.length > 0
+      ? pipelineFromIds
+      : context.themeId
+        ? [String(context.themeId).trim()].filter((id) => id.length > 0)
+        : []
+
+  const themedCache = new Map<string, Map<string, Token>>()
+  const resolveThemedTokenMap = (themeIds: string[]): Map<string, Token> | null => {
+    if (themeIds.length === 0) return null
+    // Order of themes matters for computeTokensByApplyingThemes; do not sort for the cache key.
+    const key = themeIds.join("\0")
+    const cached = themedCache.get(key)
+    if (cached) return cached
+    const themesToApply = themeIds
+      .map((id) => themeByAnyId.get(id))
+      .filter((t): t is TokenTheme => Boolean(t))
+    if (themesToApply.length === 0) return null
+    const themed = sdk.tokens.computeTokensByApplyingThemes(tokens, tokens, themesToApply)
+    const map = buildTokenKeyMap(themed)
+    themedCache.set(key, map)
+    return map
+  }
+
+  const markdownContext: LegacyPageMarkdownContext = {
+    flavor: exportConfiguration.markdownFlavor,
+    tokenExportFormat: exportConfiguration.tokenExportFormat,
+    tokenContext: buildTokenExportContext(tokens, tokenGroups),
+    pipelineThemeIds,
+    themeNameById,
+    resolveThemedTokenMap,
+  }
 
   const groupFilter = new Set(
     exportConfiguration.includedDocumentationGroupPersistentIds.map((id) => id.trim()).filter((id) => id.length > 0)
@@ -141,7 +211,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
     }
 
     const relativePath = joinPosix(exportConfiguration.outputFolder, ...innerSegments)
-    pushMarkdownFile(page, relativePath, usedKeys, outputFiles)
+    pushMarkdownFile(page, relativePath, usedKeys, outputFiles, markdownContext)
   }
 
   const skillGroupIds = exportConfiguration.skillExportGroupPersistentIds
@@ -170,7 +240,7 @@ Pulsar.export(async (sdk: Supernova, context: PulsarContext): Promise<Array<AnyO
       groupTitle: meta.title,
       frontmatterNameOverride: exportConfiguration.skillFrontmatterName,
       frontmatterDescriptionOverride: exportConfiguration.skillFrontmatterDescription,
-      markdownFlavor: exportConfiguration.markdownFlavor,
+      markdownContext,
       includePageHeadings: exportConfiguration.skillIncludePageHeadings,
     })
 
@@ -190,14 +260,15 @@ function pushMarkdownFile(
   page: DocumentationLegacyPage,
   relativePath: string,
   usedKeys: Map<string, number>,
-  outputFiles: Array<AnyOutputFile>
+  outputFiles: Array<AnyOutputFile>,
+  markdownContext: LegacyPageMarkdownContext
 ): void {
   const baseName = fileBaseNameForPage(page)
   const collisionKey = `${relativePath}/${baseName}`
   const index = usedKeys.get(collisionKey) ?? 0
   usedKeys.set(collisionKey, index + 1)
   const disambiguatedBase = index === 0 ? baseName : `${baseName}-${index}`
-  const content = legacyPageToMarkdown(page, exportConfiguration.markdownFlavor)
+  const content = legacyPageToMarkdown(page, markdownContext)
   outputFiles.push(
     FileHelper.createTextFile({
       relativePath,

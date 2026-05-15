@@ -1,12 +1,12 @@
 import type { DocumentationLegacyPage } from "@supernovaio/sdk-exporters"
-import { legacyPageToMarkdown } from "./legacy-page-to-markdown"
+import { legacyPageToMarkdown, type LegacyPageMarkdownContext } from "./legacy-page-to-markdown"
 
 export type SkillMarkdownOptions = {
   pages: Array<DocumentationLegacyPage>
   groupTitle: string
   frontmatterNameOverride: string
   frontmatterDescriptionOverride: string
-  markdownFlavor: "commonmark" | "github"
+  markdownContext: LegacyPageMarkdownContext
   includePageHeadings: boolean
 }
 
@@ -26,7 +26,7 @@ export function buildSkillMarkdown(options: SkillMarkdownOptions): string {
   const bodyParts: Array<string> = []
 
   for (const page of options.pages) {
-    const pageMd = legacyPageToMarkdown(page, options.markdownFlavor).trim()
+    const pageMd = legacyPageToMarkdown(page, options.markdownContext).trim()
     if (!pageMd) continue
 
     if (options.includePageHeadings) {

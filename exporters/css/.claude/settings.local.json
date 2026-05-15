@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Rebuild dist with per-token-type unit override changes *)",
+      "Bash(git push *)"
+    ]
+  }
+}

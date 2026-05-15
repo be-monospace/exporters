@@ -31,4 +31,11 @@ export type ExporterConfiguration = {
    * When true, each page section in `SKILL.md` is prefixed with `## {page title}` before the page body.
    */
   skillIncludePageHeadings: boolean
+  /**
+   * How Token, Token list, and Token group blocks appear in Markdown.
+   * `table` — GitHub-style pipe table (Token | Value | Alias).
+   * `list` — bullet list with name, resolved value, and optional alias.
+   * `comment` — HTML comments with ids only (legacy).
+   */
+  tokenExportFormat: "table" | "list" | "comment"
 }

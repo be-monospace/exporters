@@ -1,6 +1,20 @@
-import type { DocumentationLegacyPage, DocumentationLegacyPageBlock } from "@supernovaio/sdk-exporters"
+import type { DocumentationLegacyPage, DocumentationLegacyPageBlock, Token } from "@supernovaio/sdk-exporters"
+import type { TokenBlockRenderContext, TokenExportContext } from "./token-export"
+import {
+  buildTokenExportContext,
+  buildTokenTableRenderOptions,
+  tokensForDocumentationTokenGroup,
+  tokensMarkdownList,
+  tokensMarkdownTable,
+} from "./token-export"
 
 const MAX_DEPTH = 12
+
+export type LegacyPageMarkdownContext = TokenBlockRenderContext & {
+  flavor: "commonmark" | "github"
+  tokenExportFormat: "table" | "list" | "comment"
+  tokenContext: TokenExportContext
+}
 
 const PROPERTY_VALUE_KEYS = [
   "markdown",
@@ -19,12 +33,30 @@ const PROPERTY_VALUE_KEYS = [
  * Converts a documentation legacy page to Markdown without using
  * `MarkdownTransform` (not available / not a constructor in the Pulsar webpack stub).
  */
-export function legacyPageToMarkdown(page: DocumentationLegacyPage, _flavor: "github" | "commonmark"): string {
+export function legacyPageToMarkdown(page: DocumentationLegacyPage, ctx: LegacyPageMarkdownContext): string {
   const chunks: Array<string> = []
   for (const block of page.blocks ?? []) {
-    chunks.push(blockToMarkdown(block as DocumentationLegacyPageBlock))
+    chunks.push(blockToMarkdown(block as DocumentationLegacyPageBlock, ctx))
   }
   return chunks.join("\n").trimEnd() + "\n"
+}
+
+/** For tests: build token maps from SDK arrays */
+export function legacyPageToMarkdownWithTokens(
+  page: DocumentationLegacyPage,
+  flavor: LegacyPageMarkdownContext["flavor"],
+  tokenExportFormat: LegacyPageMarkdownContext["tokenExportFormat"],
+  tokens: Parameters<typeof buildTokenExportContext>[0],
+  tokenGroups: Parameters<typeof buildTokenExportContext>[1]
+): string {
+  return legacyPageToMarkdown(page, {
+    flavor,
+    tokenExportFormat,
+    tokenContext: buildTokenExportContext(tokens, tokenGroups),
+    pipelineThemeIds: [],
+    themeNameById: new Map(),
+    resolveThemedTokenMap: () => null,
+  })
 }
 
 function blockType(block: DocumentationLegacyPageBlock): string {
@@ -32,7 +64,62 @@ function blockType(block: DocumentationLegacyPageBlock): string {
   return typeof t === "string" ? t : String(t ?? "")
 }
 
-function blockToMarkdown(block: DocumentationLegacyPageBlock): string {
+function formatTokenBlockMarkdown(block: DocumentationLegacyPageBlock, ctx: LegacyPageMarkdownContext): string {
+  const b = block as unknown as Record<string, unknown>
+  if (ctx.tokenExportFormat === "comment") {
+    return `<!-- token: ${String(b.tokenId ?? "")} -->\n\n`
+  }
+  const id = String(b.tokenId ?? "")
+  const t = ctx.tokenContext.tokenByKey.get(id)
+  if (!t) {
+    return `<!-- token: ${id} (not found in this design system version) -->\n\n`
+  }
+  const single = [t]
+  const render = buildTokenTableRenderOptions(block, ctx)
+  return ctx.tokenExportFormat === "list"
+    ? tokensMarkdownList(single, ctx.tokenContext, render)
+    : tokensMarkdownTable(single, ctx.tokenContext, render)
+}
+
+function formatTokenGroupBlockMarkdown(block: DocumentationLegacyPageBlock, ctx: LegacyPageMarkdownContext): string {
+  const b = block as unknown as Record<string, unknown>
+  if (ctx.tokenExportFormat === "comment") {
+    return `<!-- token group: ${String(b.groupId ?? "")} -->\n\n`
+  }
+  const gid = String(b.groupId ?? "")
+  const showNested = Boolean(b.showNestedGroups)
+  const tokens = tokensForDocumentationTokenGroup(gid, ctx.tokenContext, showNested)
+  if (!tokens.length) {
+    return `<!-- token group: ${gid} (no tokens resolved) -->\n\n`
+  }
+  const render = buildTokenTableRenderOptions(block, ctx)
+  return ctx.tokenExportFormat === "list"
+    ? tokensMarkdownList(tokens, ctx.tokenContext, render)
+    : tokensMarkdownTable(tokens, ctx.tokenContext, render)
+}
+
+function formatTokenListBlockMarkdown(block: DocumentationLegacyPageBlock, ctx: LegacyPageMarkdownContext): string {
+  const b = block as unknown as Record<string, unknown>
+  const ids =
+    (b.tokenIds as string[] | undefined) ??
+    (b.designObjectIds as string[] | undefined) ??
+    []
+  if (ctx.tokenExportFormat === "comment") {
+    return ids.length ? `<!-- token list: ${ids.join(", ")} -->\n\n` : `<!-- token list: (empty) -->\n\n`
+  }
+  const tokens = ids.map((id) => ctx.tokenContext.tokenByKey.get(id)).filter((t): t is Token => Boolean(t))
+  if (!tokens.length) {
+    return ids.length
+      ? `<!-- token list: ${ids.join(", ")} (no matching tokens in this version) -->\n\n`
+      : `_No tokens in this list._\n\n`
+  }
+  const render = buildTokenTableRenderOptions(block, ctx)
+  return ctx.tokenExportFormat === "list"
+    ? tokensMarkdownList(tokens, ctx.tokenContext, render)
+    : tokensMarkdownTable(tokens, ctx.tokenContext, render)
+}
+
+function blockToMarkdown(block: DocumentationLegacyPageBlock, ctx: LegacyPageMarkdownContext): string {
   const typeStr = blockType(block)
   const b = block as unknown as Record<string, unknown>
 
@@ -76,16 +163,11 @@ function blockToMarkdown(block: DocumentationLegacyPageBlock): string {
       return `![${escapeAlt(alt)}](${url})\n\n`
     }
     case "Token":
-      return `<!-- token: ${String(b.tokenId ?? "")} -->\n\n`
+      return formatTokenBlockMarkdown(block, ctx)
     case "TokenGroup":
-      return `<!-- token group: ${String(b.groupId ?? "")} -->\n\n`
-    case "TokenList": {
-      const ids =
-        (b.tokenIds as string[] | undefined) ??
-        (b.designObjectIds as string[] | undefined) ??
-        []
-      return ids.length ? `<!-- token list: ${ids.join(", ")} -->\n\n` : `<!-- token list: (empty) -->\n\n`
-    }
+      return formatTokenGroupBlockMarkdown(block, ctx)
+    case "TokenList":
+      return formatTokenListBlockMarkdown(block, ctx)
     case "Shortcuts": {
       const shortcuts = (b.shortcuts as Array<{ title?: string; url?: string }> | undefined) ?? []
       if (!shortcuts.length) return ""
@@ -107,33 +189,37 @@ function blockToMarkdown(block: DocumentationLegacyPageBlock): string {
       return `<!-- ${typeStr}: ${String(b.url ?? "")} -->\n\n`
     case "UnorderedList":
     case "OrderedList":
-      return listBlockToMarkdown(block, typeStr === "OrderedList")
+      return listBlockToMarkdown(block, typeStr === "OrderedList", ctx)
     case "Table":
-      return tableToMarkdown(block)
+      return tableToMarkdown(block, ctx)
     case "Column":
     case "ColumnItem":
     case "Tabs":
     case "Tab":
     case "TabItem": {
       const caption = typeof b.caption === "string" ? `**${b.caption}**\n\n` : ""
-      const inner = childrenToMarkdown(block)
+      const inner = childrenToMarkdown(block, ctx)
       return caption + inner
     }
     case "Custom":
-      return customBlockToMarkdown(block, b) + "\n\n"
+      return customBlockToMarkdown(block, b, ctx) + "\n\n"
     case "ComponentAssets":
     case "FigmaFrames":
       return `<!-- ${typeStr} -->\n\n`
     default:
-      return childrenToMarkdown(block) || `<!-- block: ${typeStr} -->\n\n`
+      return childrenToMarkdown(block, ctx) || `<!-- block: ${typeStr} -->\n\n`
   }
 }
 
-function customBlockToMarkdown(block: DocumentationLegacyPageBlock, b: Record<string, unknown>): string {
+function customBlockToMarkdown(
+  block: DocumentationLegacyPageBlock,
+  b: Record<string, unknown>,
+  ctx: LegacyPageMarkdownContext
+): string {
   const key = String((b.key as string) ?? (b.variantKey as string) ?? (b.customBlockKey as string) ?? "custom")
   const parts: Array<string> = []
 
-  const fromChildren = childrenToMarkdown(block).trim()
+  const fromChildren = childrenToMarkdown(block, ctx).trim()
   if (fromChildren) parts.push(fromChildren)
 
   const propsObj = (b.properties as Record<string, unknown> | null | undefined) ?? undefined
@@ -314,20 +400,24 @@ function pmInlineNodeToMarkdown(node: unknown): string {
   return ""
 }
 
-function childrenToMarkdown(block: DocumentationLegacyPageBlock): string {
+function childrenToMarkdown(block: DocumentationLegacyPageBlock, ctx: LegacyPageMarkdownContext): string {
   const kids = (block as unknown as { children?: DocumentationLegacyPageBlock[] }).children
   if (!kids?.length) return ""
-  return kids.map((c) => blockToMarkdown(c)).join("")
+  return kids.map((c) => blockToMarkdown(c, ctx)).join("")
 }
 
-function listBlockToMarkdown(block: DocumentationLegacyPageBlock, ordered: boolean): string {
+function listBlockToMarkdown(
+  block: DocumentationLegacyPageBlock,
+  ordered: boolean,
+  ctx: LegacyPageMarkdownContext
+): string {
   const kids = (block as unknown as { children?: DocumentationLegacyPageBlock[] }).children
   if (kids?.length) {
     return (
       kids
         .map((child, i) => {
           const prefix = ordered ? `${i + 1}. ` : "- "
-          const body = blockToMarkdown(child).trim()
+          const body = blockToMarkdown(child, ctx).trim()
           const cont = ordered ? "\n   " : "\n  "
           return `${prefix}${body.replace(/\n/g, cont)}`
         })
@@ -344,7 +434,7 @@ function listBlockToMarkdown(block: DocumentationLegacyPageBlock, ordered: boole
   )
 }
 
-function tableToMarkdown(block: DocumentationLegacyPageBlock): string {
+function tableToMarkdown(block: DocumentationLegacyPageBlock, ctx: LegacyPageMarkdownContext): string {
   const kids = (block as unknown as { children?: DocumentationLegacyPageBlock[] }).children
   if (!kids?.length) return `<!-- table: no rows -->\n\n`
 
@@ -355,7 +445,7 @@ function tableToMarkdown(block: DocumentationLegacyPageBlock): string {
     const cellTexts: string[] = []
     for (const cell of cells) {
       if (blockType(cell) !== "TableCell") continue
-      const inner = childrenToMarkdown(cell).trim().replace(/\|/g, "\\|").replace(/\n/g, "<br/>")
+      const inner = childrenToMarkdown(cell, ctx).trim().replace(/\|/g, "\\|").replace(/\n/g, "<br/>")
       cellTexts.push(inner || " ")
     }
     if (cellTexts.length) rows.push(cellTexts)
